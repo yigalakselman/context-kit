@@ -1,5 +1,7 @@
 # Context Engineering Playbook (Anthropic × ACE)
 
+> **Note:** This document describes the **full vision** for ContextKit with ACE-style reflection and curation (v1.2+). It is **not the current implementation scope**. See **CLAUDE.md** for the v1.0 implementation plan (simplified schemas, basic CRUD, no reflection/curation loop yet).
+
 *A one‑page cheat sheet + repo‑ready starter kit for curating, retrieving, and evolving context for LLM agents.*
 
 ---
