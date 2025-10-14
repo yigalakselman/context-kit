@@ -79,11 +79,13 @@ Advanced features:
 - Should be fast enough for 100-500 bullets (optimize later)
 - Must be readable and debuggable (prefer simplicity over performance in v1.0)
 
-**Technical Constraints (deferred):**
-- ⏳ Must assemble context in ≤300ms for 2K bullets (v1.1+)
-- ⏳ Must handle ≥10K bullets per agent (v1.1+)
-- ⏳ Must provide traceable lineage for every bullet (v1.2+)
-- ⏳ Must support semantic search via embeddings (v1.1+)
+**Technical Constraints (deferred to v1.1+):**
+- ⏳ Performance: Assemble context in ≤300ms for 2K bullets
+- ⏳ Scalability: Handle ≥10K bullets per agent
+- ⏳ Explainability: Every bullet has traceable lineage and dependency graph
+- ⏳ Safety: Cascade quarantine on harmful dependencies
+- ⏳ Semantic search: Support embeddings for similarity matching
+- ⏳ Versioning: All schemas versioned and validated via JSON Schema
 
 **Design Principles:**
 - Atomic bullets (single concept per entry)
@@ -228,6 +230,18 @@ Advanced features:
 
 ### Architecture Flow
 
+**v1.0 (Simple):**
+```
+User Request
+      ↓
+  Retriever (filter bullets by tags/section)
+      ↓
+  Formatter (assemble Markdown)
+      ↓
+  Context Output (Anthropic-style prompt)
+```
+
+**v1.2+ (Full ACE Loop):**
 ```
 User/Task Input
       ↓
@@ -245,6 +259,23 @@ User/Task Input
       ↓
    [Context ready for next Generator execution]
 ```
+
+### Example Workflow (v1.0)
+
+1. **Developer** adds bullets to JSONL file (manually or via API)
+2. **Application** calls `getContext({ tags: ["validation", "api"] })`
+3. **Retriever** filters bullets by tags and section
+4. **Formatter** assembles Markdown with proper section headers
+5. **Application** uses context in LLM prompt
+
+### Example Workflow (v1.2+ - Future)
+
+1. **Generator** executes task using current context
+2. **Reflector** analyzes success/failure and tags bullets
+3. **Curator** merges deltas, adds improved steps or dependencies
+4. **Retriever** resolves dependencies and sequences
+5. **Formatter** builds the final Markdown context
+6. **Evaluator** measures performance and adaptation cost
 
 ### Tech Stack
 
