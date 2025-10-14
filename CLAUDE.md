@@ -378,6 +378,8 @@ Key areas to document:
 
 > **2025-10-13** — Yigal: **Chose npm as package manager.** Rationale: Default, ubiquitous, maximum compatibility. Simple and well-documented. No additional installation required. Optimizes for simplicity over performance for v1.0.
 
+> **2025-10-13** — Yigal + Claude: **Refactored documentation for context efficiency.** Reorganized to eliminate duplication between README.md and CLAUDE.md. README.md simplified to ~100 lines (was ~350), now serves as concise public-facing introduction. CLAUDE.md enhanced as single source of truth with v1.0 workflows and non-functional requirements. VISION.md positioned as v1.2+ roadmap. Impact: ~60% reduction in duplication, clearer separation of concerns (public intro vs. implementation details vs. future vision).
+
 ---
 
 ## Notes
