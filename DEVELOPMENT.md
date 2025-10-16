@@ -382,6 +382,8 @@ Key areas to document:
 
 > **2025-10-13** — Yigal + Claude: **Restructured documentation following Anthropic guidance and ACE principles.** Renamed CLAUDE.md → DEVELOPMENT.md (comprehensive planning, 400 lines). Created new CLAUDE.md (dynamic session context, ~60 lines) that tracks current phase and immediate next steps. Created BEST_PRACTICES.md (stable coding guidelines, loaded just-in-time). Rationale: Perfect separation of temporal concerns (now/stable/future) and retrieval patterns (always-loaded/just-in-time/reference). CLAUDE.md now practices what we preach: atomic, just-in-time, focused on current work. This is our own context engineering in action.
 
+> **2025-10-13** — Yigal + Claude: **Added documentation maintenance guidelines.** Created DOC_MAINTENANCE.md with comprehensive rules for when/what/how to update each documentation file. Added short update guide to CLAUDE.md (always visible to agent). Hybrid approach: essential rules always-loaded, detailed guidelines just-in-time. Core principle: update-as-you-go, documentation is external memory. This ensures documentation stays current and useful across sessions.
+
 ---
 
 ## Notes
