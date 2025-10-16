@@ -37,9 +37,15 @@ A self-improving context system that curates, stores, and retrieves atomic knowl
 
 ## Documentation
 
-- **[DEVELOPMENT.md](./DEVELOPMENT.md)** - Comprehensive planning document with architecture, decisions, and full v1.0 scope
-- **[VISION.md](./VISION.md)** - Full ACE-style vision (v1.2+) with reflection-curation loops and advanced features
+Our documentation uses a context-optimized structure:
+
+- **[CLAUDE.md](./CLAUDE.md)** - Current session focus (updated as development progresses)
+- **[DEVELOPMENT.md](./DEVELOPMENT.md)** - Comprehensive planning document with architecture, decisions, and full scope
 - **[BEST_PRACTICES.md](./BEST_PRACTICES.md)** - Code style guidelines, commands, and testing practices
+- **[VISION.md](./VISION.md)** - Future roadmap (v1.2+) with ACE-style features
+- **[DOC_MAINTENANCE.md](./DOC_MAINTENANCE.md)** - Guidelines for maintaining documentation
+
+**Philosophy:** Separation of temporal concerns (now/stable/future) and retrieval patterns (always-loaded/just-in-time/reference).
 
 ---
 
