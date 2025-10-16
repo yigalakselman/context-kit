@@ -37,8 +37,9 @@ A self-improving context system that curates, stores, and retrieves atomic knowl
 
 ## Documentation
 
-- **[CLAUDE.md](./CLAUDE.md)** - Living Development Document with implementation details, decisions, and current v1.0 scope
+- **[DEVELOPMENT.md](./DEVELOPMENT.md)** - Comprehensive planning document with architecture, decisions, and full v1.0 scope
 - **[VISION.md](./VISION.md)** - Full ACE-style vision (v1.2+) with reflection-curation loops and advanced features
+- **[BEST_PRACTICES.md](./BEST_PRACTICES.md)** - Code style guidelines, commands, and testing practices
 
 ---
 
@@ -92,7 +93,7 @@ A self-improving context system that curates, stores, and retrieves atomic knowl
 
 ## Contributing
 
-See [CLAUDE.md](./CLAUDE.md) for current implementation status and development workflow.
+See [DEVELOPMENT.md](./DEVELOPMENT.md) for implementation status and [BEST_PRACTICES.md](./BEST_PRACTICES.md) for development workflow.
 
 ---
 
