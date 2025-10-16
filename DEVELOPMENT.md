@@ -380,6 +380,8 @@ Key areas to document:
 
 > **2025-10-13** — Yigal + Claude: **Refactored documentation for context efficiency.** Reorganized to eliminate duplication between README.md and CLAUDE.md. README.md simplified to ~100 lines (was ~350), now serves as concise public-facing introduction. CLAUDE.md enhanced as single source of truth with v1.0 workflows and non-functional requirements. VISION.md positioned as v1.2+ roadmap. Impact: ~60% reduction in duplication, clearer separation of concerns (public intro vs. implementation details vs. future vision).
 
+> **2025-10-13** — Yigal + Claude: **Restructured documentation following Anthropic guidance and ACE principles.** Renamed CLAUDE.md → DEVELOPMENT.md (comprehensive planning, 400 lines). Created new CLAUDE.md (dynamic session context, ~60 lines) that tracks current phase and immediate next steps. Created BEST_PRACTICES.md (stable coding guidelines, loaded just-in-time). Rationale: Perfect separation of temporal concerns (now/stable/future) and retrieval patterns (always-loaded/just-in-time/reference). CLAUDE.md now practices what we preach: atomic, just-in-time, focused on current work. This is our own context engineering in action.
+
 ---
 
 ## Notes
