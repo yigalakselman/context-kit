@@ -73,4 +73,17 @@ Initializing npm package and configuring TypeScript build system.
 
 ---
 
+## Documentation Updates
+
+Update as-you-go, not in batches:
+
+- **This file (CLAUDE.md):** Check off steps ✅, update "Right Now" when context shifts, update "Last Updated"
+- **DEVELOPMENT.md:** Append decisions to running log (never edit history)
+- **BEST_PRACTICES.md:** Add commands/patterns as discovered
+- **README.md:** Update status when milestones complete
+
+💡 See DOC_MAINTENANCE.md for detailed guidelines.
+
+---
+
 **Last Updated:** 2025-10-13
