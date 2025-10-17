@@ -10,14 +10,29 @@ A modular toolkit for building, evolving, and reusing structured LLM context.
 
 ContextKit enables LLM agents to maintain **structured, evolving, high-quality context** by storing atomic "context bullets" (strategies, examples, checklists) and dynamically assembling them into Anthropic-style Markdown prompts at runtime.
 
-**The Problem:**
-Traditional prompt engineering is static and manual, causing:
-- Context collapse (details lost through repeated rewriting)
-- Brevity bias (over-compressed instructions that omit domain heuristics)
-- Poor traceability and reuse of learned strategies
+## The Problem
 
-**The Solution:**
-A self-improving context system that curates, stores, and retrieves atomic knowledge items, assembling them on-demand into structured, section-based prompts.
+**AI agents have amnesia.** Every session, they start fresh. When they solve a problem, learn a pattern, or discover a gotcha - that knowledge disappears when the session ends.
+
+**Specific pain points:**
+- **No persistent memory** - Agent learns "how to paginate this API" → next session, makes the same mistake again
+- **Static prompts** - Human manually rewrites system prompt after every insight, slow and lossy
+- **Context collapse** - Details get lost when compressing knowledge ("validate input" instead of the full checklist with all edge cases)
+- **Poor reuse** - Knowledge from one agent session can't be shared with another
+- **All-or-nothing loading** - Either load entire knowledge base (waste tokens) or load nothing (miss relevant knowledge)
+
+## The Solution
+
+**Give AI agents a notebook and memory system.**
+
+ContextKit enables agents to:
+- **Write** - Record decisions, lessons, workflows as they work
+- **Store** - Keep atomic "bullets" durably (survives sessions)
+- **Retrieve** - Smart retrieval of relevant past knowledge when needed
+- **Evolve** - Knowledge base improves through use (reflection + curation)
+
+Instead of starting from scratch each time, agents can reference their notes:
+> "I've seen this before. Let me check my notes... ah yes, last time I learned to handle pagination this way."
 
 ---
 

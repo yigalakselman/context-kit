@@ -15,15 +15,55 @@
 ### Summary / Purpose
 ContextKit is a modular toolkit for building, evolving, and reusing structured LLM context. It enables language model agents to maintain structured, evolving, high-quality context by implementing an Agentic Context Engineering (ACE) loop of generation, reflection, and curation.
 
-**The Problem:**
-Traditional prompt engineering is static and manual, causing:
-- Context collapse (details lost through repeated rewriting)
-- Brevity bias (over-compressed instructions that omit domain heuristics)
-- Poor traceability and reuse of learned strategies
-- Expensive re-prompting and inconsistent agent behavior
+### The Core Problem
 
-**The Solution:**
-A self-improving context system that curates, stores, and retrieves atomic "context bullets" while dynamically assembling Anthropic-style Markdown context blocks at runtime. The system continuously refines itself using feedback loops (Generator → Reflector → Curator).
+**AI agents have amnesia.** Every session, they start fresh. When they solve a problem, learn a pattern, or discover a gotcha - that knowledge disappears when the session ends.
+
+**Specific pain points:**
+
+1. **No persistent memory**
+   - Agent solves "how to paginate this API" → next session, makes same mistake again
+   - Agent learns "always validate input before processing" → forgets it next time
+   - No way to build on past experience
+
+2. **Static, manual prompts**
+   - Human writes a system prompt
+   - Agent uses it, discovers it's incomplete
+   - Human manually rewrites it
+   - Cycle repeats - slow, lossy, doesn't scale
+
+3. **Context collapse**
+   - Agent has 10 useful strategies
+   - Human tries to compress them into system prompt
+   - Details get lost ("validate input" instead of "validate input format, check for nulls, ensure UTF-8 encoding, verify length constraints")
+   - Brevity bias - over-compression loses critical nuance
+
+4. **Poor reuse**
+   - Agent A learns a great debugging workflow
+   - Agent B working on similar task can't access it
+   - No way to share knowledge between sessions/agents
+
+5. **All-or-nothing context loading**
+   - Either load entire knowledge base (waste tokens)
+   - Or load nothing (miss relevant knowledge)
+   - No smart "retrieve what's relevant right now"
+
+### The Solution
+
+**Give AI agents a notebook and memory system.**
+
+- **Write**: Agents write down decisions, lessons, workflows as they work
+- **Store**: Atomic "bullets" stored durably (survives sessions)
+- **Retrieve**: Smart retrieval of relevant past knowledge when needed
+- **Evolve**: Knowledge base improves through use (reflection + curation)
+
+Instead of starting from scratch each time, agents can say:
+> "I've seen this before. Let me check my notes... ah yes, last time I learned to handle pagination this way."
+
+The system achieves this through:
+- Atomic "context bullets" stored as structured data
+- Dynamic Anthropic-style Markdown assembly at runtime
+- Feedback loops (Generator → Reflector → Curator) for continuous improvement
 
 ### Desired Outcomes / KPIs
 
@@ -383,6 +423,10 @@ Key areas to document:
 > **2025-10-13** — Yigal + Claude: **Restructured documentation following Anthropic guidance and ACE principles.** Renamed CLAUDE.md → DEVELOPMENT.md (comprehensive planning, 400 lines). Created new CLAUDE.md (dynamic session context, ~60 lines) that tracks current phase and immediate next steps. Created BEST_PRACTICES.md (stable coding guidelines, loaded just-in-time). Rationale: Perfect separation of temporal concerns (now/stable/future) and retrieval patterns (always-loaded/just-in-time/reference). CLAUDE.md now practices what we preach: atomic, just-in-time, focused on current work. This is our own context engineering in action.
 
 > **2025-10-13** — Yigal + Claude: **Added documentation maintenance guidelines.** Created DOC_MAINTENANCE.md with comprehensive rules for when/what/how to update each documentation file. Added short update guide to CLAUDE.md (always visible to agent). Hybrid approach: essential rules always-loaded, detailed guidelines just-in-time. Core principle: update-as-you-go, documentation is external memory. This ensures documentation stays current and useful across sessions.
+
+> **2025-10-17** — Yigal + Claude: **Clarified note-taking as core to ContextKit.** User confirmed that agent note-taking is not a future feature but fundamental to what ContextKit is. This reinforces that the v1.2+ ACE loop (reflection-curation) is the full vision, while v1.0 provides the infrastructure (storage, retrieval, formatting) that enables agents to build their notebooks.
+
+> **2025-10-17** — Yigal + Claude: **Documented core problem statement.** Added comprehensive problem framing to both README.md and DEVELOPMENT.md. Key insight: "AI agents have amnesia" - they can't retain knowledge across sessions. ContextKit solves this by giving agents a persistent notebook where they can write, store, retrieve, and evolve their learned knowledge. This problem statement now clearly articulates why ContextKit exists and what pain points it addresses.
 
 ---
 
