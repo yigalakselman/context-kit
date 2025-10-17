@@ -134,12 +134,22 @@ Advanced features:
 - Incremental curation (delta updates, not rewrites)
 - Dependency-aware retrieval (resolve graph before rendering)
 
-**V1.0 Scope (First Implementation):**
-- Define and validate **simplified** schemas (Bullet: 6 fields, Manifest: 3 fields)
-- Implement Bullet Store (choose: SQLite vs JSONL)
-- Implement basic Retriever (simple selection: all bullets or filter by tags)
-- Implement Formatter (basic Markdown assembly with sections)
-- Basic API: `get_context(tags=[])`, `add_bullet()`, `list_bullets()`, `update_bullet()`, `delete_bullet()`
+**V1.0 Scope (First Implementation - Book Metaphor):**
+- Define and validate **simplified** schemas (Bullet: 6 fields)
+- Implement Bullet Store (JSONL storage)
+- Implement **Book metaphor** with pages, Table of Contents, and Index
+  - Each bullet = one page (page number derived from bullet ID)
+  - Auto-generated TOC (organized by sections)
+  - Auto-generated Index (tag-based lookup)
+  - Markdown output format (universal for all LLMs)
+- Implement Notebook API as a **tool** for AI agents:
+  - `getTableOfContents()` - return TOC + Index as markdown
+  - `getPage(pageNum)` - return single page as markdown
+  - `getPages(pageNums[])` - return multiple pages as markdown
+  - `search(tags, sections?)` - return matching pages as markdown
+  - `addNote(note)` - write new note, return page number
+  - `updatePage(pageNum, updates)` - modify existing page
+  - `deletePage(pageNum)` - remove page
 - Prove the concept works end-to-end
 
 **Explicitly Out of Scope for V1.0:**
@@ -177,13 +187,15 @@ Advanced features:
 
 ### Core Components
 
-**v1.0 (MVP):**
+**v1.0 (Book Metaphor):**
 | Component | Description | Status |
 |-----------|-------------|--------|
-| **Bullet Store** | Simple storage (JSONL or SQLite) for bullets | ⏳ Not started |
-| **Manifest** | Simple config (sections, max_bullets, format) | ⏳ Not started |
-| **Retriever** | Basic selection: all bullets or filter by tags/section | ⏳ Not started |
-| **Formatter** | Markdown assembler with section headers and bullet lists | ⏳ Not started |
+| **Bullet Store** | JSONL storage for notes (one note per line) | ⏳ Not started |
+| **Page Manager** | Maps bullet IDs to page numbers (ctx-001 → Page 1) | ⏳ Not started |
+| **TOC Generator** | Auto-generates Table of Contents from bullets (organized by sections) | ⏳ Not started |
+| **Index Generator** | Auto-generates tag-based index for quick lookup | ⏳ Not started |
+| **Markdown Formatter** | Formats pages, TOC, and index as markdown | ⏳ Not started |
+| **Notebook API** | High-level tool interface for AI agents | ⏳ Not started |
 
 **v1.1+ (Future):**
 | Component | Description | Status |
@@ -202,83 +214,139 @@ Advanced features:
 |-----------|-------------|--------|
 | **Evaluator** | Benchmarks context quality vs. baseline tasks | ⏳ Not started |
 
-### Data Model
+### Data Model (Book Metaphor)
 
-**Bullet Schema (v1.0 - Simplified):**
+**Note Schema (v1.0 - Bullet = Page):**
 ```json
 {
   "id": "ctx-001",
   "section": "strategies",
   "content": "Always validate user input before processing",
   "tags": ["validation", "security"],
-  "created_at": "2025-10-13T10:00:00Z",
+  "created_at": "2025-10-17T10:00:00Z",
   "metadata": {}
 }
 ```
 
 **Field Descriptions:**
-- `id` (required): Unique identifier (e.g., "ctx-001")
-- `section` (required): Section name (role, tools, strategies, examples, etc.)
-- `content` (required): The actual context text (supports markdown, including code blocks)
-- `tags` (optional): Array of strings for filtering/categorization
+- `id` (required): Unique identifier (e.g., "ctx-001") → becomes page number (Page 1)
+- `section` (required): Section name for TOC organization (strategies, examples, lessons-learned, etc.)
+- `content` (required): The note content in markdown (supports code blocks, lists, etc.)
+- `tags` (optional): Array of strings for Index generation and filtering
 - `created_at` (optional): ISO 8601 timestamp
-- `metadata` (optional): Escape hatch for future extensions without schema breaks
+- `metadata` (optional): Escape hatch for future extensions (links, cross-references, etc.)
+
+**Page Number Mapping:**
+- `ctx-001` → Page 1
+- `ctx-042` → Page 42
+- `ctx-007` → Page 7
+- ID numeric suffix becomes page number (stable, persistent)
+- Gaps are normal (like torn-out pages in a real notebook)
 
 **What's deferred to later versions:**
-- ❌ Separate `code` object → embed code in `content` as markdown code blocks
+- ❌ Cross-reference links (`metadata.see_also`) → v1.1+
+- ❌ Dynamic links (`metadata.related_query`) → v1.1+
 - ❌ `source`, `first_seen`, `last_used` → add when reflection loop exists (v1.2+)
 - ❌ `depends_on`, `conflicts_with`, `supersedes` → add with dependency resolution (v1.1+)
-- ❌ `sequence_id`, `step_index`, `guards`, `optional` → add with sequence assembly (v1.1+)
 - ❌ `counters` (helpful/harmful) → add with reflection loop (v1.2+)
 
-**Manifest Schema (v1.0 - Simplified):**
-```json
-{
-  "sections": ["role", "tools", "strategies", "examples"],
-  "max_bullets_per_section": 5,
-  "markdown_format": {
-    "header_prefix": "## ",
-    "bullet_prefix": "- "
-  }
-}
+**Example v1.0 Output (Book Format):**
+
+*When agent calls `notebook.getTableOfContents()`:*
+```markdown
+# My Notebook
+
+## Table of Contents
+
+### Strategies (Pages 1-5)
+- Page 1: API Pagination Strategy
+- Page 2: Input Validation Strategy
+- Page 3: Error Handling Strategy
+
+### Examples (Pages 6-10)
+- Page 6: REST API Call Example
+- Page 7: Pagination Implementation
+- Page 8: Error Response Handling
+
+### Lessons Learned (Pages 15-20)
+- Page 15: Rate Limiting Backoff
+
+## Index (Tags)
+- api: Pages 1, 3, 6, 7, 15
+- error-handling: Pages 3, 8, 15
+- pagination: Pages 1, 7
+- validation: Pages 2
 ```
 
-**Field Descriptions:**
-- `sections`: Ordered list of section names to render
-- `max_bullets_per_section`: Hard cap on bullets per section (controls token budget)
-- `markdown_format`: Basic formatting options for output
-
-**What's deferred to later versions:**
-- ❌ `ranking_weights` → start simple (newest first, or basic tag matching)
-- ❌ `dependency_policy` → add with dependency resolution (v1.1+)
-- ❌ `sequence_policy` → add with sequence assembly (v1.1+)
-- ❌ `code_block_language_default` → not needed if code lives in content markdown
-
-**Example v1.0 Output:**
+*When agent calls `notebook.getPages([1, 7])`:*
 ```markdown
-## role
-- You are an expert system for managing invoices
+## Page 1: API Pagination Strategy
 
-## strategies
-- Always validate user input before processing
-- Log all API calls for debugging
-- Use pagination for large datasets
+**Section:** strategies
+**Tags:** #api #pagination
 
-## examples
-- To fetch invoices: `GET /api/invoices?page=1`
+Always paginate APIs until empty page is returned. Never assume a fixed number of pages.
+
+**See also:** Page 7 (example implementation)
+
+---
+
+## Page 7: Pagination Implementation
+
+**Section:** examples
+**Tags:** #api #pagination
+
+\```javascript
+async function fetchAllUsers() {
+  let page = 1;
+  let users = [];
+
+  while (true) {
+    const response = await fetch(`/api/users?page=${page}`);
+    const data = await response.json();
+
+    if (data.length === 0) break;
+
+    users.push(...data);
+    page++;
+  }
+
+  return users;
+}
+\```
+
+**See also:** Page 1 (pagination strategy)
 ```
 
 ### Architecture Flow
 
-**v1.0 (Simple):**
+**v1.0 (Book Metaphor):**
 ```
-User Request
+Agent wants context
       ↓
-  Retriever (filter bullets by tags/section)
+  1. Call notebook.getTableOfContents()
       ↓
-  Formatter (assemble Markdown)
+  2. Agent reads TOC + Index (sees what's available)
       ↓
-  Context Output (Anthropic-style prompt)
+  3. Agent decides which pages to fetch
+      ↓
+  4. Call notebook.getPages([1, 7, 15]) or notebook.search(tags: ["pagination"])
+      ↓
+  5. Receive pages as markdown
+      ↓
+  6. Agent system assembles full context:
+     - System prompt
+     - User query
+     - Tool definitions
+     - Retrieved pages from notebook
+      ↓
+  7. Send to LLM
+
+[Agent learns something new]
+      ↓
+  8. Call notebook.addNote({section, content, tags})
+      ↓
+  9. Returns page number (e.g., Page 42)
 ```
 
 **v1.2+ (Full ACE Loop):**
@@ -300,13 +368,41 @@ User/Task Input
    [Context ready for next Generator execution]
 ```
 
-### Example Workflow (v1.0)
+### Example Workflow (v1.0 - Book Metaphor)
 
-1. **Developer** adds bullets to JSONL file (manually or via API)
-2. **Application** calls `getContext({ tags: ["validation", "api"] })`
-3. **Retriever** filters bullets by tags and section
-4. **Formatter** assembles Markdown with proper section headers
-5. **Application** uses context in LLM prompt
+**Scenario: Agent needs to implement API pagination**
+
+1. **Agent** calls `notebook.getTableOfContents()`
+   - Receives TOC with all sections and page ranges
+   - Sees Index showing `pagination: Pages 1, 7`
+
+2. **Agent** decides to fetch pagination-related pages
+   - Calls `notebook.getPages([1, 7])`
+   - Receives Page 1 (strategy) and Page 7 (example) as markdown
+
+3. **Agent system** assembles LLM context:
+   ```
+   System Prompt: You are a coding assistant...
+   User Query: Implement pagination for /api/users endpoint
+   Tools: [read_file, write_file, bash]
+   Context from Notebook:
+     [Page 1 and Page 7 markdown content here]
+   ```
+
+4. **Agent** implements pagination successfully
+
+5. **Agent** learns new insight: "When API returns 429, use exponential backoff"
+   - Calls `notebook.addNote({
+       section: "lessons-learned",
+       content: "When API returns 429, implement exponential backoff...",
+       tags: ["api", "error-handling", "rate-limiting"]
+     })`
+   - Returns `42` (new page number)
+
+6. **Next session**: Agent can find this by:
+   - Reading TOC → sees "Lessons Learned (Pages 15-42)"
+   - Searching Index → sees `rate-limiting: Pages 42`
+   - Calling `notebook.getPage(42)`
 
 ### Example Workflow (v1.2+ - Future)
 
@@ -427,6 +523,10 @@ Key areas to document:
 > **2025-10-17** — Yigal + Claude: **Clarified note-taking as core to ContextKit.** User confirmed that agent note-taking is not a future feature but fundamental to what ContextKit is. This reinforces that the v1.2+ ACE loop (reflection-curation) is the full vision, while v1.0 provides the infrastructure (storage, retrieval, formatting) that enables agents to build their notebooks.
 
 > **2025-10-17** — Yigal + Claude: **Documented core problem statement.** Added comprehensive problem framing to both README.md and DEVELOPMENT.md. Key insight: "AI agents have amnesia" - they can't retain knowledge across sessions. ContextKit solves this by giving agents a persistent notebook where they can write, store, retrieve, and evolve their learned knowledge. This problem statement now clearly articulates why ContextKit exists and what pain points it addresses.
+
+> **2025-10-17** — Yigal + Claude: **Clarified Notebook's role as a tool for agent systems.** Key insight: Notebook is a tool that agent systems integrate, not the context manager itself. Agent systems handle context window assembly (system prompt, user query, tools, conversation history). Notebook provides persistent storage and retrieval of optimized notes. This separation of concerns keeps Notebook simple and flexible, allowing it to work with any agent architecture.
+
+> **2025-10-17** — Yigal + Claude: **Adopted book metaphor for v1.0 design.** Major architectural decision: Model notebook as a real book with Table of Contents, Index, and numbered pages. Each bullet becomes a page (page number derived from ID: ctx-001 → Page 1). All output is markdown (universal format for LLMs). API becomes tool-oriented: `getTableOfContents()`, `getPage(n)`, `getPages([...])`, `search(tags)`, `addNote()`. Benefits: (1) Universal format - all LLMs understand markdown, (2) Self-documenting - agent can browse TOC to see what's available, (3) Token-efficient - fetch TOC first, then only needed pages, (4) Natural navigation - page numbers + index + TOC give multiple entry points, (5) Intuitive metaphor - "turn to page 5" vs "fetch bullet ctx-005". This simplifies v1.0 significantly while providing excellent UX for agents. Removed Manifest schema (no longer needed).
 
 ---
 

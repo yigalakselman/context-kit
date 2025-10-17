@@ -8,7 +8,7 @@ A modular toolkit for building, evolving, and reusing structured LLM context.
 
 ## What is ContextKit?
 
-ContextKit enables LLM agents to maintain **structured, evolving, high-quality context** by storing atomic "context bullets" (strategies, examples, checklists) and dynamically assembling them into Anthropic-style Markdown prompts at runtime.
+ContextKit enables LLM agents to maintain **structured, evolving, high-quality context** by providing a persistent **notebook** modeled like a real book—with pages, Table of Contents, and Index. Agents can write notes, browse what's available, and retrieve relevant pages on-demand, all in universal markdown format.
 
 ## The Problem
 
@@ -39,9 +39,10 @@ Instead of starting from scratch each time, agents can reference their notes:
 ## Current Status
 
 **v1.0 (In Development):**
-- ✅ Simplified data schemas (Bullet: 6 fields, Manifest: 3 fields)
+- ✅ Note schema defined (6 fields: id, section, content, tags, created_at, metadata)
 - ✅ Technology stack decided: TypeScript, JSONL storage, npm
-- 🚧 Implementation: BulletStore, Retriever, Formatter
+- ✅ Book metaphor adopted (pages, TOC, Index, markdown output)
+- 🚧 Implementation: Notebook API, storage layer, formatters
 
 **Future Roadmap:**
 - v1.1: Dependency resolution & sequence assembly
@@ -70,9 +71,11 @@ Our documentation uses a context-optimized structure:
 
 ---
 
-## Core Concepts
+## Core Concepts (Book Metaphor)
 
-**Bullet** - Atomic context entry (strategy, example, checklist item)
+**ContextKit models your agent's notebook as a real book** with pages, Table of Contents, and Index.
+
+**Note (Page)** - Each note is one page in the book
 ```json
 {
   "id": "ctx-001",
@@ -81,33 +84,48 @@ Our documentation uses a context-optimized structure:
   "tags": ["validation", "security"]
 }
 ```
+`ctx-001` → **Page 1**
 
-**Manifest** - Configuration for retrieval and formatting
-```json
-{
-  "sections": ["role", "tools", "strategies", "examples"],
-  "max_bullets_per_section": 5
-}
+**Table of Contents** - Auto-generated navigation
+```markdown
+### Strategies (Pages 1-5)
+- Page 1: Input Validation Strategy
+- Page 2: Error Handling Strategy
+
+### Examples (Pages 6-10)
+- Page 6: API Call Example
+
+## Index (Tags)
+- validation: Pages 1, 6
+- api: Pages 2, 6
 ```
 
-**Output** - Assembled Markdown context
+**Page Output** - Markdown format (universal for all LLMs)
 ```markdown
-## role
-- You are an expert system
+## Page 1: Input Validation Strategy
 
-## strategies
-- Always validate user input before processing
-- Log all API calls for debugging
+**Section:** strategies
+**Tags:** #validation #security
+
+Always validate user input before processing:
+1. Check for null/undefined
+2. Verify data types
+3. Validate length constraints
+4. Sanitize input
+
+**See also:** Page 6 (example)
 ```
 
 ---
 
 ## Key Features (Planned)
 
-- 📦 **Atomic storage** - JSONL-based bullet store for git-friendly context
-- 🎯 **Section-based organization** - Anthropic-style structured prompts
-- 🔍 **Smart retrieval** - Filter by tags and sections
-- 📝 **Markdown assembly** - Dynamic prompt generation
+- 📖 **Book metaphor** - Intuitive pages, TOC, and Index navigation
+- 📦 **Atomic storage** - JSONL-based note store (one page = one line)
+- 📄 **Universal format** - Markdown output works with all LLMs
+- 🔍 **Smart retrieval** - Browse TOC, search by tags, fetch specific pages
+- 🎯 **Token-efficient** - Fetch TOC first, then only needed pages
+- 📝 **Tool-oriented API** - Designed for AI agent systems to integrate
 - 🔄 **Self-improving** (v1.2+) - Reflection-curation feedback loops
 
 ---
