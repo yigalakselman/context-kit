@@ -65,6 +65,57 @@ The system achieves this through:
 - Dynamic Anthropic-style Markdown assembly at runtime
 - Feedback loops (Generator → Reflector → Curator) for continuous improvement
 
+### Key Concepts & Terminology
+
+It's critical to understand how **Memory**, **Context Window**, and **Notebook** relate:
+
+**Memory (Short-lived, Session-scoped)**
+- Ephemeral storage during a single agent session
+- Limited by hardware specs (RAM)
+- Contains conversation history, intermediate states, tool outputs
+- Disappears when session ends
+- Example: Claude Code's current conversation thread
+
+**Context Window (What goes to the LLM)**
+- The actual input sent to the LLM on each request
+- Limited by model constraints (e.g., 200K tokens for Claude 3.5 Sonnet)
+- Requires careful optimization (token budget management)
+- Assembled by the **agent system**, not by Notebook
+- Typical components:
+  - System prompt (role, instructions)
+  - User query (current request)
+  - Conversation history (from Memory)
+  - Tool definitions (available functions)
+  - Retrieved notes (from Notebook) ← **This is where Notebook fits**
+
+**Notebook (Persistent, Cross-session)**
+- Durable storage that survives session boundaries
+- No size limit from LLM perspective (storage-based)
+- Contains optimized, curated notes
+- Accessed as a **tool** by agent systems
+- Example: ContextKit's JSONL storage with book metaphor
+
+**The Architecture:**
+```
+AI Agent System (e.g., Claude Code)
+├─ Memory (short-lived session state)
+├─ Context Window Builder (assembles LLM input)
+│  ├─ System prompt
+│  ├─ User query
+│  ├─ Conversation history (from Memory)
+│  ├─ Tool definitions
+│  └─ Retrieved notes ← from Notebook
+└─ Tools
+   └─ Notebook (persistent storage + retrieval)
+```
+
+**Key Insight:** Notebook is a tool that provides optimized notes to agent systems. The agent system is responsible for building the context window. Notebook doesn't manage context—it provides persistent, retrievable knowledge that agents can selectively include in their context.
+
+**Optimized Notes:**
+- Just the right size of information the agent needs
+- Contains links (static or dynamic) to other notes for on-demand expansion
+- Example: "For pagination details, see Page 42" (static link) or "For more on {topic}, search tags: api, error-handling" (dynamic link)
+
 ### Desired Outcomes / KPIs
 
 | Objective | Metric | Target |
@@ -527,6 +578,8 @@ Key areas to document:
 > **2025-10-17** — Yigal + Claude: **Clarified Notebook's role as a tool for agent systems.** Key insight: Notebook is a tool that agent systems integrate, not the context manager itself. Agent systems handle context window assembly (system prompt, user query, tools, conversation history). Notebook provides persistent storage and retrieval of optimized notes. This separation of concerns keeps Notebook simple and flexible, allowing it to work with any agent architecture.
 
 > **2025-10-17** — Yigal + Claude: **Adopted book metaphor for v1.0 design.** Major architectural decision: Model notebook as a real book with Table of Contents, Index, and numbered pages. Each bullet becomes a page (page number derived from ID: ctx-001 → Page 1). All output is markdown (universal format for LLMs). API becomes tool-oriented: `getTableOfContents()`, `getPage(n)`, `getPages([...])`, `search(tags)`, `addNote()`. Benefits: (1) Universal format - all LLMs understand markdown, (2) Self-documenting - agent can browse TOC to see what's available, (3) Token-efficient - fetch TOC first, then only needed pages, (4) Natural navigation - page numbers + index + TOC give multiple entry points, (5) Intuitive metaphor - "turn to page 5" vs "fetch bullet ctx-005". This simplifies v1.0 significantly while providing excellent UX for agents. Removed Manifest schema (no longer needed).
+
+> **2025-10-17** — Yigal + Claude: **Documented Memory vs Context Window vs Notebook terminology.** Added dedicated "Key Concepts & Terminology" section to clarify critical distinctions: (1) Memory = short-lived session state (ephemeral, hardware-limited, conversation history), (2) Context Window = actual input to LLM (assembled by agent system, token-limited, includes prompt + query + history + tools + notes), (3) Notebook = persistent storage tool (ContextKit's role, cross-session, provides optimized notes). Key insight: Agent systems build context windows; Notebook is a tool they call to retrieve notes. Also documented concept of "optimized notes" with static/dynamic links. This clarifies ContextKit's scope and prevents confusion about its role in agent architectures.
 
 ---
 

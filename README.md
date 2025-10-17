@@ -23,16 +23,25 @@ ContextKit enables LLM agents to maintain **structured, evolving, high-quality c
 
 ## The Solution
 
-**Give AI agents a notebook and memory system.**
+**Give AI agents a persistent notebook.**
 
-ContextKit enables agents to:
+ContextKit provides a **notebook tool** that agent systems can integrate:
 - **Write** - Record decisions, lessons, workflows as they work
-- **Store** - Keep atomic "bullets" durably (survives sessions)
+- **Store** - Keep atomic notes durably (survives sessions)
 - **Retrieve** - Smart retrieval of relevant past knowledge when needed
 - **Evolve** - Knowledge base improves through use (reflection + curation)
 
 Instead of starting from scratch each time, agents can reference their notes:
 > "I've seen this before. Let me check my notes... ah yes, last time I learned to handle pagination this way."
+
+### How It Fits
+
+**Important distinction:**
+- **Memory** = Short-lived session state (conversation history, limited by hardware)
+- **Context Window** = What goes to the LLM (assembled by agent system: prompt + query + history + tools + notes)
+- **Notebook** = Persistent storage tool (ContextKit's role—provides notes to agent systems)
+
+ContextKit is the **Notebook**. Agent systems (like Claude Code) handle context assembly and call Notebook as a tool to fetch relevant notes.
 
 ---
 
