@@ -56,30 +56,65 @@ This file contains stable coding guidelines, commands, and practices. Load this 
 
 ## Commands
 
-*To be populated as project setup completes*
-
 ### Build
 ```bash
 npm run build         # Compile TypeScript to dist/
-npm run typecheck     # Run TypeScript type checking
+npm run typecheck     # Run TypeScript type checking (without emitting files)
+npm run clean         # Remove dist/ directory
 ```
 
 ### Test
 ```bash
-npm test              # Run all tests
+npm test              # Run all tests (Vitest)
 npm run test:watch    # Run tests in watch mode
 npm run test:coverage # Run tests with coverage report
 ```
 
-### Lint & Format
-```bash
-npm run lint          # Lint code with ESLint
-npm run format        # Format code with Prettier
-```
-
 ### Development
 ```bash
-npm run dev           # Run in development mode
+# Install dependencies
+npm install
+
+# Build and typecheck
+npm run build
+npm run typecheck
+
+# Run tests
+npm test
+```
+
+---
+
+## Tools & Libraries
+
+### Schema Validation: Zod
+- **Why:** TypeScript-first design, excellent DX, runtime validation + type inference
+- **Usage:** Define schemas with `z.object()`, infer types with `z.infer<typeof Schema>`
+- **Example:**
+```typescript
+import { z } from 'zod';
+
+export const NoteSchema = z.object({
+  id: z.string().min(1),
+  section: z.string().min(1),
+  content: z.string().min(1),
+});
+
+export type Note = z.infer<typeof NoteSchema>;
+```
+
+### Testing: Vitest
+- **Why:** ESM-native, fast, modern, similar API to Jest
+- **Usage:** Write tests with `describe()`, `it()`, `expect()`
+- **Example:**
+```typescript
+import { describe, it, expect } from 'vitest';
+
+describe('NoteStore', () => {
+  it('should store and retrieve notes', () => {
+    // Test implementation
+  });
+});
 ```
 
 ---

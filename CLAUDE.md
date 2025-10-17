@@ -1,41 +1,54 @@
 # ContextKit - Current Focus
 
-## Active Phase: Project Setup (Phase 1 of 4)
+## Active Phase: Core Implementation (Phase 2 of 4)
 
-Setting up TypeScript project structure for v1.0 implementation.
+Phase 1 (Project Setup) completed. Ready to implement core Notebook components.
 
 ---
 
 ## Right Now
 
-Adopted book metaphor for v1.0 design. Notes are pages, with auto-generated TOC and Index. All output is markdown. Ready to begin Phase 1 project setup.
+Completed Phase 1 setup: npm package, TypeScript config, directory structure, Zod (schema validation), Vitest (testing). Ready to implement Phase 2 core components.
 
 ---
 
-## Immediate Next Steps (Phase 1)
+## Completed Steps (Phase 1)
 
 1. ✅ Initialize git repository
 2. ✅ Add .gitignore
 3. ✅ Refactor documentation structure
    - Added core problem statement ("AI agents have amnesia")
    - Adopted book metaphor (pages, TOC, Index)
-4. ⏳ Initialize npm package (package.json)
-5. ⏳ Configure TypeScript (tsconfig.json)
-6. ⏳ Set up directory structure (src/, tests/, examples/)
-7. ⏳ Choose and configure schema validation library
-8. ⏳ Choose and configure testing framework
+4. ✅ Initialize npm package (package.json)
+5. ✅ Configure TypeScript (tsconfig.json) with strict mode
+6. ✅ Set up directory structure (src/, tests/, examples/)
+7. ✅ Choose and configure schema validation: **Zod** (TypeScript-first, type inference)
+8. ✅ Choose and configure testing framework: **Vitest** (ESM-native, fast)
+
+## Immediate Next Steps (Phase 2)
+
+1. ⏳ Implement NoteStore (JSONL CRUD operations)
+2. ⏳ Implement ID/page number utilities
+3. ⏳ Implement TOC generator
+4. ⏳ Implement Index generator
+5. ⏳ Implement Markdown formatters
+6. ⏳ Implement Notebook API
+7. ⏳ Write tests for each component
+8. ⏳ Create example usage
 
 ---
 
-## Open Decisions
+## Decisions Made (Phase 1)
 
-**Schema Validation:**
-- Option A: Zod (TypeScript-first, excellent DX, runtime validation)
-- Option B: Ajv (JSON Schema standard, broader compatibility)
+**Schema Validation:** ✅ **Zod**
+- TypeScript-first design with type inference
+- Excellent DX, runtime validation
+- Composable schemas
 
-**Testing Framework:**
-- Option A: Vitest (modern, fast, ESM-native)
-- Option B: Jest (established, battle-tested, more ecosystem)
+**Testing Framework:** ✅ **Vitest**
+- ESM-native (perfect for our module setup)
+- Fast, modern, similar API to Jest
+- Better TypeScript integration
 
 ---
 
@@ -99,4 +112,4 @@ Update as-you-go, not in batches:
 
 ---
 
-**Last Updated:** 2025-10-17
+**Last Updated:** 2025-10-17 (Phase 1 completed)

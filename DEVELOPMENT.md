@@ -581,6 +581,8 @@ Key areas to document:
 
 > **2025-10-17** — Yigal + Claude: **Documented Memory vs Context Window vs Notebook terminology.** Added dedicated "Key Concepts & Terminology" section to clarify critical distinctions: (1) Memory = short-lived session state (ephemeral, hardware-limited, conversation history), (2) Context Window = actual input to LLM (assembled by agent system, token-limited, includes prompt + query + history + tools + notes), (3) Notebook = persistent storage tool (ContextKit's role, cross-session, provides optimized notes). Key insight: Agent systems build context windows; Notebook is a tool they call to retrieve notes. Also documented concept of "optimized notes" with static/dynamic links. This clarifies ContextKit's scope and prevents confusion about its role in agent architectures.
 
+> **2025-10-17** — Yigal + Claude: **Completed Phase 1: Project Setup.** Successfully initialized npm package (contextkit v0.1.0), configured TypeScript with strict mode and ES2022 modules, set up directory structure (src/, tests/, examples/), chose **Zod** for schema validation (TypeScript-first, type inference, excellent DX), and chose **Vitest** for testing (ESM-native, fast, modern). Created initial file structure with placeholder components: types.ts (Note schema with Zod), store.ts (NoteStore), notebook.ts (main API), index.ts (exports). Updated package.json with build/test scripts. Updated BEST_PRACTICES.md with commands and tool documentation. Project is now ready for Phase 2 (Core Implementation). All decisions documented in CLAUDE.md.
+
 ---
 
 ## Notes
