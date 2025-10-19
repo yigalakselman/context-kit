@@ -6,6 +6,59 @@
 
 ---
 
+## v1.0 Features (Current Release)
+
+### Core Notebook System
+- Simple, focused notebook with book metaphor (pages, TOC, index)
+- JSONL storage with basic CRUD operations
+- 7 MCP tools for AI agent integration
+- Tag-based and section-based search
+
+### Starter Notebook (Self-Teaching System)
+
+**Ship with built-in best practices notebook** - ContextKit demonstrates its own value by documenting how to use itself!
+
+**Starter notes to include:**
+
+1. **Section: "getting-started"**
+   - How to organize notes with sections and tags
+   - When to create a new note vs update an existing one
+   - Using the Table of Contents to navigate knowledge
+   - Search strategies: tags vs sections vs combined queries
+
+2. **Section: "best-practices"**
+   - Keep notes focused and atomic (one concept per note)
+   - Use descriptive titles that extract well from content
+   - Tag consistently for better searchability
+   - Update notes rather than creating duplicates
+   - When to use different sections (strategies, examples, lessons-learned, etc.)
+
+3. **Section: "examples"**
+   - Example: Well-structured strategy note
+   - Example: Code snippet with context
+   - Example: Lesson-learned from debugging
+   - Example: API usage pattern
+
+4. **Section: "meta"**
+   - About this notebook system
+   - The book metaphor explained (pages, TOC, index)
+   - How notes are stored (JSONL format)
+   - MCP tools overview
+
+**Implementation:**
+- Include `examples/starter-notebook.jsonl` in package
+- Documentation shows how to explore the starter notebook
+- Users can delete/modify starter notes or keep them as reference
+- Makes ContextKit self-teaching - learn by exploring!
+
+**Benefits:**
+- New users understand the system immediately
+- Demonstrates the tool's value from first use
+- Shows real-world note organization
+- Reduces onboarding friction
+
+---
+
 ## 1) Core Principles
 
 * **Small, structured system prompt.** Split into *Role*, *Rules*, *Tools*, *Output Contract*.
