@@ -21,10 +21,10 @@ export const NoteSchema = z.object({
   tags: z.array(z.string()).optional(),
 
   /** ISO 8601 timestamp */
-  created_at: z.string().datetime().optional(),
+  created_at: z.string().datetime({ offset: true }).optional(),
 
   /** Escape hatch for future extensions (links, cross-references, etc.) */
-  metadata: z.record(z.unknown()).optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
 });
 
 /**

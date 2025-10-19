@@ -12,15 +12,18 @@
  */
 
 import type { Note, RetrievalOptions } from './types.js';
+import { NoteStore } from './store.js';
+import { getIdFromPage, getPageNumber, generateNextId } from './utils/id.js';
+import { generateTableOfContents, formatPage, formatPages } from './formatters.js';
 
 /**
  * Main Notebook class
  */
 export class Notebook {
-  // TODO: Initialize with NoteStore, page manager, generators, formatters
+  private store: NoteStore;
 
   constructor(storePath: string) {
-    // TODO: Set up components
+    this.store = new NoteStore(storePath);
   }
 
   /**
@@ -28,18 +31,25 @@ export class Notebook {
    * @returns Markdown string with TOC and tag-based index
    */
   async getTableOfContents(): Promise<string> {
-    // TODO: Generate and return TOC + Index as markdown
-    throw new Error('Not implemented');
+    const notes = await this.store.list();
+    return generateTableOfContents(notes);
   }
 
   /**
    * Get a single page by number
    * @param pageNum - Page number (derived from note ID)
    * @returns Markdown string with page content
+   * @throws Error if page not found
    */
   async getPage(pageNum: number): Promise<string> {
-    // TODO: Fetch note, format as markdown page
-    throw new Error('Not implemented');
+    const id = getIdFromPage(pageNum);
+    const note = await this.store.get(id);
+
+    if (!note) {
+      throw new Error(`Page ${pageNum} not found`);
+    }
+
+    return formatPage(note);
   }
 
   /**
@@ -48,8 +58,19 @@ export class Notebook {
    * @returns Markdown string with all pages
    */
   async getPages(pageNums: number[]): Promise<string> {
-    // TODO: Fetch notes, format as markdown pages
-    throw new Error('Not implemented');
+    const notes: Note[] = [];
+
+    for (const pageNum of pageNums) {
+      const id = getIdFromPage(pageNum);
+      const note = await this.store.get(id);
+
+      if (note) {
+        notes.push(note);
+      }
+      // Skip missing pages silently (could log warning)
+    }
+
+    return formatPages(notes);
   }
 
   /**
@@ -58,8 +79,29 @@ export class Notebook {
    * @returns Markdown string with matching pages
    */
   async search(options: RetrievalOptions): Promise<string> {
-    // TODO: Filter notes, format as markdown pages
-    throw new Error('Not implemented');
+    const allNotes = await this.store.list();
+
+    let filtered = allNotes;
+
+    // Filter by sections if specified
+    if (options.sections && options.sections.length > 0) {
+      filtered = filtered.filter(note => options.sections!.includes(note.section));
+    }
+
+    // Filter by tags if specified (note matches if it has ANY of the specified tags)
+    if (options.tags && options.tags.length > 0) {
+      filtered = filtered.filter(note => {
+        if (!note.tags || note.tags.length === 0) return false;
+        return options.tags!.some(tag => note.tags!.includes(tag));
+      });
+    }
+
+    // Apply limit if specified
+    if (options.limit && options.limit > 0) {
+      filtered = filtered.slice(0, options.limit);
+    }
+
+    return formatPages(filtered);
   }
 
   /**
@@ -68,8 +110,24 @@ export class Notebook {
    * @returns Page number of the newly created note
    */
   async addNote(note: Omit<Note, 'id'>): Promise<number> {
-    // TODO: Generate ID, save note, return page number
-    throw new Error('Not implemented');
+    // Generate next available ID
+    const existingNotes = await this.store.list();
+    const existingIds = existingNotes.map(n => n.id);
+    const newId = generateNextId(existingIds);
+
+    // Add created_at timestamp if not provided
+    const timestamp = note.created_at || new Date().toISOString();
+
+    // Create full note with ID
+    const fullNote: Note = {
+      ...note,
+      id: newId,
+      created_at: timestamp,
+    };
+
+    await this.store.add(fullNote);
+
+    return getPageNumber(newId);
   }
 
   /**
@@ -77,9 +135,14 @@ export class Notebook {
    * @param pageNum - Page number to update
    * @param updates - Partial note data to update
    */
-  async updatePage(pageNum: number, updates: Partial<Note>): Promise<void> {
-    // TODO: Convert page number to ID, update note
-    throw new Error('Not implemented');
+  async updatePage(pageNum: number, updates: Partial<Omit<Note, 'id'>>): Promise<void> {
+    const id = getIdFromPage(pageNum);
+
+    // Ensure ID is not in updates (preserve original ID)
+    const safeUpdates = { ...updates };
+    delete (safeUpdates as Partial<Note>).id;
+
+    await this.store.update(id, safeUpdates);
   }
 
   /**
@@ -87,7 +150,7 @@ export class Notebook {
    * @param pageNum - Page number to delete
    */
   async deletePage(pageNum: number): Promise<void> {
-    // TODO: Convert page number to ID, delete note
-    throw new Error('Not implemented');
+    const id = getIdFromPage(pageNum);
+    await this.store.delete(id);
   }
 }

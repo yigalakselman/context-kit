@@ -4,5 +4,20 @@
  * v1.0: Notebook component with book metaphor (pages, TOC, index)
  */
 
-// Public API exports will go here
-// Example: export { getTableOfContents, getPage, getPages, search, addNote, updatePage, deletePage } from './notebook.js';
+// Main Notebook class
+export { Notebook } from './notebook.js';
+
+// Types
+export type { Note, RetrievalOptions } from './types.js';
+export { NoteSchema } from './types.js';
+
+// Lower-level components (for advanced usage)
+export { NoteStore } from './store.js';
+export { getPageNumber, getIdFromPage, generateNextId, extractTitle } from './utils/id.js';
+export {
+  generateTOC,
+  generateIndex,
+  formatPage,
+  formatPages,
+  generateTableOfContents,
+} from './formatters.js';
