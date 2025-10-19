@@ -48,6 +48,39 @@ Phases 1 & 2 completed. Core implementation is done and fully tested. MCP server
 6. ✅ Create MCP_SETUP.md documentation
 7. ✅ Configure package.json bin entry for contextkit-mcp command
 
+## Next Steps (Phase 3: Testing & Polish)
+
+1. ⏳ **Manual MCP Testing**: Test MCP server with Claude Desktop/Inspector
+   - Verify all 7 tools load correctly
+   - Test add_note → verify writes work
+   - Test get_table_of_contents → verify TOC generation
+   - Test search_notes → verify tag/section queries
+   - Test update_page and delete_page
+   - Verify notebook file creation at ~/.contextkit/notebook.jsonl
+
+2. ⏳ **Library API Testing**: Run and verify examples
+   - Test examples/basic-usage.ts end-to-end
+   - Verify all Notebook methods work as expected
+   - Test edge cases (empty notebook, missing pages, etc.)
+
+3. ⏳ **Package Testing**: Prepare for npm publish
+   - Test `npm pack` and verify package contents
+   - Test global installation: `npm install -g`
+   - Verify `contextkit-mcp` command works globally
+   - Check package.json metadata (keywords, description, license)
+
+4. ⏳ **Documentation Review**
+   - Verify all code examples in docs are correct
+   - Ensure all paths reference dist/mcp-server.js (not dist/src/)
+   - Add troubleshooting section if issues found during testing
+   - Review README for clarity and completeness
+
+5. ⏳ **Final Polish**
+   - Add any missing error messages
+   - Ensure consistent error handling
+   - Update version to 1.0.0 when ready
+   - Tag release: v1.0.0
+
 ---
 
 ## Decisions Made
