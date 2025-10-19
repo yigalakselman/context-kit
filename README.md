@@ -47,11 +47,12 @@ ContextKit is the **Notebook**. Agent systems (like Claude Code) handle context 
 
 ## Current Status
 
-**v1.0 (In Development):**
-- ✅ Note schema defined (6 fields: id, section, content, tags, created_at, metadata)
-- ✅ Technology stack decided: TypeScript, JSONL storage, npm
-- ✅ Book metaphor adopted (pages, TOC, Index, markdown output)
-- 🚧 Implementation: Notebook API, storage layer, formatters
+**v1.0 (Complete):**
+- ✅ Note schema with validation (id, section, content, tags, created_at, metadata)
+- ✅ Book metaphor (pages, TOC, Index, markdown output)
+- ✅ Notebook API (add, retrieve, search, update, delete)
+- ✅ JSONL storage layer
+- ✅ MCP server (stdio transport for AI agents like Claude Desktop)
 
 **Future Roadmap:**
 - v1.1: Dependency resolution & sequence assembly
@@ -66,6 +67,7 @@ Our documentation uses a context-optimized structure:
 
 - **[CLAUDE.md](./CLAUDE.md)** - Current session focus (updated as development progresses)
 - **[DEVELOPMENT.md](./DEVELOPMENT.md)** - Comprehensive planning document with architecture, decisions, and full scope
+- **[MCP_SETUP.md](./MCP_SETUP.md)** - MCP server setup guide for AI agents (Claude Desktop, etc.)
 - **[BEST_PRACTICES.md](./BEST_PRACTICES.md)** - Code style guidelines, commands, and testing practices
 - **[VISION.md](./VISION.md)** - Future roadmap (v1.2+) with ACE-style features
 - **[DOC_MAINTENANCE.md](./DOC_MAINTENANCE.md)** - Guidelines for maintaining documentation
@@ -76,7 +78,58 @@ Our documentation uses a context-optimized structure:
 
 ## Quick Start
 
-> Coming soon - v1.0 implementation in progress
+### As a Library
+
+```bash
+npm install contextkit
+```
+
+```typescript
+import { Notebook } from 'contextkit';
+
+const notebook = new Notebook('./my-notebook.jsonl');
+
+// Add a note
+const pageNum = await notebook.addNote({
+  section: 'strategies',
+  content: '# API Pagination\n\nAlways paginate...',
+  tags: ['api', 'pagination']
+});
+
+// Get table of contents
+const toc = await notebook.getTableOfContents();
+
+// Retrieve specific pages
+const page = await notebook.getPage(1);
+
+// Search by tags
+const results = await notebook.search({ tags: ['api'] });
+```
+
+### As an MCP Server for AI Agents
+
+Configure Claude Desktop or other MCP clients to use ContextKit:
+
+```json
+{
+  "mcpServers": {
+    "contextkit": {
+      "command": "node",
+      "args": ["/path/to/context-kit/dist/mcp-server.js"]
+    }
+  }
+}
+```
+
+Then your AI agent can use tools like:
+- `add_note` - Record new knowledge
+- `get_table_of_contents` - Browse what's available
+- `get_page` - Retrieve specific pages
+- `search_notes` - Find notes by tags/sections
+
+See **[MCP_SETUP.md](./MCP_SETUP.md)** for detailed configuration.
+
+See **[examples/basic-usage.ts](./examples/basic-usage.ts)** for more examples
 
 ---
 

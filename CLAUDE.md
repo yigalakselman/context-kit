@@ -2,13 +2,15 @@
 
 ## Active Phase: Testing & Polish (Phase 3 of 4)
 
-Phases 1 & 2 completed. Core implementation is done and fully tested.
+Phases 1 & 2 completed. Core implementation is done and fully tested. MCP server integration complete.
 
 ---
 
 ## Right Now
 
-✅ Phase 2 complete: Implemented all core components (NoteStore, formatters, Notebook API) with 48 passing tests. Library is fully functional. Ready for Phase 3 (polish, documentation, examples).
+✅ **Phase 2 Complete**: All core components implemented (NoteStore, formatters, Notebook API) with 48 passing tests.
+
+✅ **MCP Integration Complete**: Full MCP server implementation with latest SDK (v1.20+), 7 tools exposed for AI agents, stdio transport configured. Ready for Claude Desktop integration.
 
 ---
 
@@ -25,30 +27,47 @@ Phases 1 & 2 completed. Core implementation is done and fully tested.
 7. ✅ Choose and configure schema validation: **Zod** (TypeScript-first, type inference)
 8. ✅ Choose and configure testing framework: **Vitest** (ESM-native, fast)
 
-## Immediate Next Steps (Phase 2)
+## Completed Steps (Phase 2)
 
-1. ⏳ Implement NoteStore (JSONL CRUD operations)
-2. ⏳ Implement ID/page number utilities
-3. ⏳ Implement TOC generator
-4. ⏳ Implement Index generator
-5. ⏳ Implement Markdown formatters
-6. ⏳ Implement Notebook API
-7. ⏳ Write tests for each component
-8. ⏳ Create example usage
+1. ✅ Implement NoteStore (JSONL CRUD operations)
+2. ✅ Implement ID/page number utilities
+3. ✅ Implement TOC generator
+4. ✅ Implement Index generator
+5. ✅ Implement Markdown formatters
+6. ✅ Implement Notebook API
+7. ✅ Write tests for each component (48 tests passing)
+8. ✅ Create example usage (examples/basic-usage.ts)
+
+## MCP Server Integration (Bonus)
+
+1. ✅ Implement MCP server using latest SDK (McpServer + registerTool API)
+2. ✅ Expose 7 tools: add_note, get_table_of_contents, get_page, get_pages, search_notes, update_page, delete_page
+3. ✅ Configure Zod v3 schemas for type-safe parameters
+4. ✅ Set up stdio transport for Claude Desktop
+5. ✅ Fix build structure (removed duplicate artifacts in dist/)
+6. ✅ Create MCP_SETUP.md documentation
+7. ✅ Configure package.json bin entry for contextkit-mcp command
 
 ---
 
-## Decisions Made (Phase 1)
+## Decisions Made
 
-**Schema Validation:** ✅ **Zod**
+**Schema Validation:** ✅ **Zod v3**
 - TypeScript-first design with type inference
 - Excellent DX, runtime validation
 - Composable schemas
+- v3 chosen for MCP SDK compatibility
 
 **Testing Framework:** ✅ **Vitest**
 - ESM-native (perfect for our module setup)
 - Fast, modern, similar API to Jest
 - Better TypeScript integration
+
+**MCP Integration:** ✅ **@modelcontextprotocol/sdk v1.20+**
+- Modern McpServer API with registerTool() methods
+- Stdio transport for local Claude Desktop integration
+- Zod schemas for type-safe tool parameters
+- Clean build structure: src/ → dist/ (no duplicates)
 
 ---
 
@@ -86,6 +105,7 @@ Phases 1 & 2 completed. Core implementation is done and fully tested.
 - **BEST_PRACTICES.md** - Code style, commands, testing guidelines
 - **VISION.md** - Future roadmap (v1.2+ features)
 - **README.md** - Public-facing introduction
+- **MCP_SETUP.md** - MCP server configuration for Claude Desktop integration
 
 ---
 
@@ -112,4 +132,4 @@ Update as-you-go, not in batches:
 
 ---
 
-**Last Updated:** 2025-10-17 (Phase 1 completed)
+**Last Updated:** 2025-10-19 (Phase 2 + MCP Integration completed)

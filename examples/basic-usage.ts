@@ -10,7 +10,7 @@
  * - Updating and deleting pages
  */
 
-import { Notebook } from '../src/index.js';
+import { Notebook } from '../dist/index.js';
 import { join } from 'node:path';
 
 async function main() {

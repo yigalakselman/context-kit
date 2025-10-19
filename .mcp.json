@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "contextkit": {
+      "command": "node",
+      "args": ["/Users/yigalakselman/github.com/yiglakselman/context-kit/dist/mcp-server.js"]
+    }
+  }
+}
