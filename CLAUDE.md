@@ -175,13 +175,21 @@ Phases 1 & 2 completed. Core implementation is done and fully tested. MCP server
 
 ## Documentation Updates
 
-**Primary workflow:** Use ContextKit's notebook (via MCP tools) to store project knowledge, decisions, and learnings.
+**End-of-session reflection (primary workflow):**
+- Focus on tasks during the session without documentation interruptions
+- At session end, user triggers: **"reflect on this session"** or **"capture learnings"**
+- Agent reviews conversation (already in context), extracts key learnings
+- Agent adds curated notes to ContextKit via MCP tools
+- More efficient than interrupting flow or re-loading transcripts later
+
+**Only interrupt session for:**
+- Critical architecture decisions affecting immediate next steps
+- Major scope changes or pivots requiring documentation
 
 **This file (CLAUDE.md):**
 - Check off steps ✅ as completed
 - Update "Right Now" when context shifts
 - Update "Last Updated" timestamp
-- Keep concise - detailed docs go in notebook
 
 **README.md:** Update status when milestones complete
 
