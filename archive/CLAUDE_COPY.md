@@ -144,22 +144,14 @@ Phases 1 & 2 completed. Core implementation is done and fully tested. MCP server
 
 ---
 
-## Documentation
+## Quick References
 
-**Primary Source of Truth:** Project documentation is stored in ContextKit's notebook (dog-fooding our own tool).
-
-**Archive:** Historical documentation files are available in `archive/` for reference:
-- `archive/DEVELOPMENT.md` - Full plan, architecture, decisions, running log
-- `archive/BEST_PRACTICES.md` - Code style, commands, testing guidelines
-- `archive/VISION.md` - Future roadmap (v1.2+ features)
-- `archive/MCP_SETUP.md` - MCP server configuration for Claude Desktop integration
-- `archive/TESTING_STRATEGY.md` - Comprehensive testing strategy and results (Phases 1-4)
-- `archive/DOC_MAINTENANCE.md` - Documentation maintenance guidelines
-- `archive/CLAUDE_COPY.md` - Snapshot of this file
-
-**Active Files:**
-- **README.md** - Public-facing introduction (kept in repo root)
-- **CLAUDE.md** (this file) - Current focus and quick reference
+- **DEVELOPMENT.md** - Full plan, architecture, decisions, running log
+- **BEST_PRACTICES.md** - Code style, commands, testing guidelines
+- **VISION.md** - Future roadmap (v1.2+ features)
+- **README.md** - Public-facing introduction
+- **MCP_SETUP.md** - MCP server configuration for Claude Desktop integration
+- **TESTING_STRATEGY.md** - Comprehensive testing strategy and results (Phases 1-4)
 
 ---
 
@@ -175,16 +167,15 @@ Phases 1 & 2 completed. Core implementation is done and fully tested. MCP server
 
 ## Documentation Updates
 
-**Primary workflow:** Use ContextKit's notebook (via MCP tools) to store project knowledge, decisions, and learnings.
+Update as-you-go, not in batches:
 
-**This file (CLAUDE.md):**
-- Check off steps ✅ as completed
-- Update "Right Now" when context shifts
-- Update "Last Updated" timestamp
-- Keep concise - detailed docs go in notebook
+- **This file (CLAUDE.md):** Check off steps ✅, update "Right Now" when context shifts, update "Last Updated"
+- **DEVELOPMENT.md:** Append decisions to running log (never edit history)
+- **BEST_PRACTICES.md:** Add commands/patterns as discovered
+- **README.md:** Update status when milestones complete
 
-**README.md:** Update status when milestones complete
+💡 See DOC_MAINTENANCE.md for detailed guidelines.
 
 ---
 
-**Last Updated:** 2025-10-19 (Moved detailed docs to archive/, now using ContextKit notebook as primary documentation store)
+**Last Updated:** 2025-10-19 (Phase 3 MCP Testing completed, examples removed, package testing pending)
