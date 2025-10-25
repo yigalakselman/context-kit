@@ -1,6 +1,6 @@
 # ContextKit v1.0 Test Plan
 
-**Purpose:** Validate all new features after removing tags, adding full-text search, token estimates, and enhanced tool descriptions.
+**Purpose:** Validate all features after removing tags, Index, and search. Verify token estimates and enhanced tool descriptions work correctly.
 
 **Tester:** AI Agent with MCP access to ContextKit
 **Environment:** Fresh ContextKit notebook instance
