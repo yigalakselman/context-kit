@@ -158,8 +158,8 @@ describe('BulletStore', () => {
 One JSON object per line, newline-delimited:
 
 ```jsonl
-{"id":"ctx-001","section":"strategies","content":"Always validate input","tags":["validation"]}
-{"id":"ctx-002","section":"examples","content":"Use pagination for large datasets","tags":["api"]}
+{"id":"ctx-001","section":"strategies","content":"Always validate input","created_at":"2025-10-24T10:00:00Z"}
+{"id":"ctx-002","section":"examples","content":"Use pagination for large datasets","created_at":"2025-10-24T10:05:00Z"}
 ```
 
 **Reading:**

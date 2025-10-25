@@ -11,14 +11,11 @@ export const NoteSchema = z.object({
   /** Unique identifier (e.g., "ctx-001") → becomes page number (Page 1) */
   id: z.string().min(1),
 
-  /** Section name for TOC organization (strategies, examples, lessons-learned, etc.) */
+  /** Section name for TOC organization (e.g., mcp-setup, testing-vitest, architecture-decisions) */
   section: z.string().min(1),
 
   /** The note content in markdown (supports code blocks, lists, etc.) */
   content: z.string().min(1),
-
-  /** Array of strings for Index generation and filtering */
-  tags: z.array(z.string()).optional(),
 
   /** ISO 8601 timestamp */
   created_at: z.string().datetime({ offset: true }).optional(),
@@ -33,25 +30,10 @@ export const NoteSchema = z.object({
  * @example
  * {
  *   "id": "ctx-001",
- *   "section": "strategies",
- *   "content": "Always validate user input before processing",
- *   "tags": ["validation", "security"],
+ *   "section": "best-practices",
+ *   "content": "# Input Validation\n\nAlways validate user input before processing to prevent security issues.",
  *   "created_at": "2025-10-17T10:00:00Z",
  *   "metadata": {}
  * }
  */
 export type Note = z.infer<typeof NoteSchema>;
-
-/**
- * Options for retrieving pages from the notebook
- */
-export interface RetrievalOptions {
-  /** Filter by section names */
-  sections?: string[];
-
-  /** Filter by tags (returns pages matching ANY of the tags) */
-  tags?: string[];
-
-  /** Limit number of results */
-  limit?: number;
-}

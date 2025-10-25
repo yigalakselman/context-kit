@@ -75,3 +75,15 @@ export function extractTitle(content: string): string {
 
   return 'Untitled';
 }
+
+/**
+ * Estimate token count for a string using rule of thumb (4 chars ≈ 1 token)
+ * This is a simple approximation for context planning.
+ * @param text - Text to estimate tokens for
+ * @returns Estimated token count
+ */
+export function estimateTokens(text: string): number {
+  // Simple heuristic: ~4 characters per token
+  // This is conservative and works reasonably well for English text
+  return Math.ceil(text.length / 4);
+}

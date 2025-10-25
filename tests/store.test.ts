@@ -30,7 +30,6 @@ describe('NoteStore', () => {
         id: 'ctx-001',
         section: 'strategies',
         content: 'Always validate input',
-        tags: ['validation'],
       };
 
       await store.add(note);
@@ -99,7 +98,6 @@ describe('NoteStore', () => {
         id: 'ctx-002',
         section: 'examples',
         content: 'Note 2',
-        tags: ['test'],
       };
 
       await store.add(note1);
@@ -124,15 +122,14 @@ describe('NoteStore', () => {
 
       await store.update('ctx-001', {
         content: 'Updated content',
-        tags: ['new-tag'],
+        section: 'examples',
       });
 
       const updated = await store.get('ctx-001');
       expect(updated).toEqual({
         id: 'ctx-001',
-        section: 'strategies',
+        section: 'examples',
         content: 'Updated content',
-        tags: ['new-tag'],
       });
     });
 

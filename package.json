@@ -1,7 +1,7 @@
 {
   "name": "contextkit",
   "version": "0.1.0",
-  "description": "A modular toolkit for building, evolving, and reusing structured LLM context. Provides a persistent notebook with book metaphor (pages, TOC, index) for AI agents.",
+  "description": "A persistent notebook for AI agents with book metaphor (pages, TOC). Features token estimates and zero-config onboarding via enhanced MCP tool descriptions.",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -34,7 +34,10 @@
     "memory",
     "prompt-engineering",
     "context-engineering",
-    "markdown"
+    "markdown",
+    "mcp",
+    "model-context-protocol",
+    "token-estimation"
   ],
   "author": "Yigal Akselman",
   "license": "MIT",

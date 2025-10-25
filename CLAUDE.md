@@ -8,11 +8,22 @@ Phases 1 & 2 completed. Core implementation is done and fully tested. MCP server
 
 ## Right Now
 
-✅ **Phase 2 Complete**: All core components implemented (NoteStore, formatters, Notebook API) with 48 passing tests.
+✅ **Phase 2 Complete**: All core components implemented (NoteStore, formatters, Notebook API).
 
-✅ **MCP Integration Complete**: Full MCP server implementation with latest SDK (v1.20+), 7 tools exposed for AI agents, stdio transport configured. Ready for Claude Desktop integration.
+✅ **MCP Integration Complete**: Full MCP server implementation with latest SDK (v1.20+), 6 tools exposed for AI agents, stdio transport configured.
 
-✅ **Phase 3 (MCP Testing) Complete**: All 7 MCP tools verified working. TESTING_STRATEGY.md created documenting comprehensive test results. MCP is the primary interface - no separate programmatic examples needed.
+✅ **Phase 3 (MCP Testing) Complete**: Initial testing done.
+
+✅ **v1.0 MAJOR REFACTOR COMPLETE** (2025-10-24):
+   - **BREAKING:** Removed tags, Index, and search - maximally simplified architecture
+   - Added token size estimates - helps agents plan context usage
+   - Added configurable notebook directory via `CONTEXTKIT_NOTEBOOK_DIR` env var
+   - Enhanced tool descriptions with usage guidance - zero-config agent onboarding
+   - All 41 tests passing (down from 48 - removed tag and search tests)
+   - Created comprehensive TEST_PLAN.md for validation
+   - **Decision:** TOC browsing sufficient for v1.0, search deferred to v1.1 if needed
+
+✅ **Testing Complete**: TEST_PLAN.md executed successfully - all features validated and working
 
 ---
 
@@ -34,15 +45,15 @@ Phases 1 & 2 completed. Core implementation is done and fully tested. MCP server
 1. ✅ Implement NoteStore (JSONL CRUD operations)
 2. ✅ Implement ID/page number utilities
 3. ✅ Implement TOC generator
-4. ✅ Implement Index generator
+4. ✅ ~~Implement Index generator~~ (REMOVED in v1.0 refactor)
 5. ✅ Implement Markdown formatters
 6. ✅ Implement Notebook API
-7. ✅ Write tests for each component (48 tests passing)
+7. ✅ Write tests for each component (41 tests passing after refactor)
 
 ## MCP Server Integration (Bonus)
 
 1. ✅ Implement MCP server using latest SDK (McpServer + registerTool API)
-2. ✅ Expose 7 tools: add_note, get_table_of_contents, get_page, get_pages, search_notes, update_page, delete_page
+2. ✅ Expose 6 tools: add_note, get_table_of_contents, get_page, get_pages, update_page, delete_page
 3. ✅ Configure Zod v3 schemas for type-safe parameters
 4. ✅ Set up stdio transport for Claude Desktop
 5. ✅ Fix build structure (removed duplicate artifacts in dist/)
@@ -51,40 +62,70 @@ Phases 1 & 2 completed. Core implementation is done and fully tested. MCP server
 
 ## Completed Steps (Phase 3: Testing & Polish)
 
-1. ✅ **Manual MCP Testing**: Tested all MCP tools successfully
-   - Verified all 7 tools load correctly
-   - Tested add_note → writes work correctly (3 notes added)
+1. ✅ **Manual MCP Testing** (Initial): Tested all MCP tools successfully
+   - Verified all 6 tools load correctly
+   - Tested add_note → writes work correctly
    - Tested get_table_of_contents → TOC generation working
-   - Tested search_notes → tag/section queries working (tags, sections, combined)
+   - Tested get_page and get_pages → retrieval working
    - Tested update_page and delete_page → both working
    - Verified notebook file creation at ~/.contextkit/notebook.jsonl
-   - Created TESTING_STRATEGY.md documenting all test results
 
 2. ✅ **Library API Testing**: Completed via MCP tools
    - MCP is the primary interface for ContextKit
    - All Notebook methods tested through MCP tools
    - Edge cases verified (empty notebook, deletions, updates, search)
    - Removed examples/ directory - not needed with MCP interface
-   - Unit tests (48 passing) cover internal implementation
+   - Unit tests (44 passing) cover internal implementation
+
+3. ✅ **v1.0 Architecture Refactor** (2025-10-24):
+   - Removed tags from Note schema (breaking change)
+   - Removed Index generator and tag-based index from TOC
+   - **Removed search_notes tool** - TOC browsing sufficient for v1.0
+   - Added token size estimates to TOC (per-section + total)
+   - Implemented `estimateTokens()` utility (~4 chars per token heuristic)
+   - Added configurable notebook directory via `CONTEXTKIT_NOTEBOOK_DIR` env var
+   - Enhanced all MCP tool descriptions with "When to use" and "Best practices"
+   - Updated all tests to remove tag and search references (41 tests passing)
+   - Created comprehensive TEST_PLAN.md for AI agent validation
+   - **Rationale for removing search**: TOC always pulled first, making search redundant
 
 ## Next Steps (Phase 3: Remaining Tasks)
 
-1. ⏳ **Package Testing**: Prepare for npm publish
+1. ✅ **Execute TEST_PLAN.md**: AI agent validation of new features (COMPLETE)
+   - ✅ Run comprehensive test suite (6 test suites, 20+ tests)
+   - ✅ Verify enhanced tool descriptions are working
+   - ✅ Validate tags removal and full-text search
+   - ✅ Confirm token estimates accuracy
+   - ✅ Test all edge cases
+   - ✅ Test successful - all features validated
+
+2. ⏳ **Create Starter Notebook**: Pre-populated documentation
+   - Write context engineering principles
+   - Create example notes showing best practices
+   - Include section naming conventions
+   - Add usage guidance for agents
+   - ~12-15 well-structured pages
+
+3. ⏳ **Package Testing**: Prepare for npm publish
    - Test `npm pack` and verify package contents
    - Test global installation: `npm install -g`
    - Verify `contextkit-mcp` command works globally
    - Check package.json metadata (keywords, description, license)
 
-2. ⏳ **Documentation Review**
-   - Verify all code examples in docs are correct
-   - Ensure all paths reference dist/mcp-server.js (not dist/src/)
-   - Add troubleshooting section if issues found during testing
-   - Review README for clarity and completeness
+4. ✅ **Documentation Review** (COMPLETE)
+   - ✅ Completely rewrote README.md with new architecture
+   - ✅ Documented CONTEXTKIT_NOTEBOOK_DIR env var usage
+   - ✅ Added multi-project setup examples
+   - ✅ Updated all code examples (removed tags)
+   - ✅ Added Context Engineering Principles section
+   - ✅ Added comprehensive API reference
+   - ✅ Linked to archived documentation
+   - ✅ Updated status to "v1.0 Complete & Tested"
 
-3. ⏳ **Final Polish**
-   - Add any missing error messages
+5. ⏳ **Final Polish**
+   - Review all error messages
    - Ensure consistent error handling
-   - Update version to 1.0.0 when ready
+   - Update version to 1.0.0 when tests pass
    - Tag release: v1.0.0
 
 ---
@@ -114,33 +155,47 @@ Phases 1 & 2 completed. Core implementation is done and fully tested. MCP server
 - Simplified build: removed examples/ directory and tsconfig.examples.json
 - All API testing completed via MCP tools
 
+**Architecture Decisions (v1.0):** ✅ **Maximally Simplified Design**
+- **Removed tags**: Simpler schema, reduces maintenance burden, avoids ambiguous metadata
+- **Removed Index**: Browse via TOC instead
+- **Removed search**: TOC browsing sufficient for v1.0, simpler mental model
+- **Token estimates**: Simple heuristic (~4 chars/token) for context planning
+- **Configurable directory**: `CONTEXTKIT_NOTEBOOK_DIR` env var for multi-project workflows
+- **Enhanced tool descriptions**: Zero-config agent onboarding via built-in usage guidance
+- **Rationale**: If TOC is always checked first (per tool guidance), search adds little value
+
 ---
 
-## v1.0 Scope Reminder (Book Metaphor)
+## v1.0 Scope (Book Metaphor - Simplified)
 
 **Building:**
-- Note schema (6 fields: id, section, content, tags, created_at, metadata)
+- Note schema (5 fields: id, section, content, created_at, metadata)
+  - ~~tags~~ REMOVED - simpler, more LLM-native
 - JSONL storage (one note per line)
 - Book metaphor components:
   - Page numbering (ctx-001 → Page 1)
-  - Table of Contents (auto-generated by sections)
-  - Index (auto-generated from tags)
-  - Markdown formatter (pages, TOC, index)
-- Notebook API (tool for AI agents):
-  - `getTableOfContents()` → TOC + Index as markdown
-  - `getPage(n)` → single page as markdown
-  - `getPages([...])` → multiple pages as markdown
-  - `search(tags)` → matching pages as markdown
-  - `addNote({...})` → write note, returns page number
-  - `updatePage(n, {...})` → modify page
-  - `deletePage(n)` → remove page
+  - Table of Contents (auto-generated by sections with token counts)
+  - ~~Index (auto-generated from tags)~~ REMOVED - redundant
+  - Markdown formatter (pages, TOC)
+- Notebook API (MCP tools for AI agents):
+  - `add_note` → write note, returns page number
+  - `get_table_of_contents` → TOC with token estimates
+  - `get_page` → single page as markdown
+  - `get_pages` → multiple pages as markdown
+  - `update_page` → modify page
+  - `delete_page` → remove page
+- Enhanced tool descriptions with usage guidance (zero-config onboarding)
+- Token size estimates (~4 chars/token heuristic)
+- Configurable notebook directory via `CONTEXTKIT_NOTEBOOK_DIR` env var
 
 **NOT building (deferred to v1.1+):**
 - ❌ Cross-reference links ("See also" automation)
+- ❌ Search functionality (keyword or semantic - deferred based on user feedback)
 - ❌ Embeddings / semantic search
 - ❌ Dependency resolution
 - ❌ Sequence assembly
 - ❌ Reflection-curation loop
+- ❌ Static HTML export (deferred)
 
 ---
 
@@ -195,4 +250,4 @@ Phases 1 & 2 completed. Core implementation is done and fully tested. MCP server
 
 ---
 
-**Last Updated:** 2025-10-19 (Moved detailed docs to archive/, now using ContextKit notebook as primary documentation store)
+**Last Updated:** 2025-10-24 (v1.0 simplified to 6 MCP tools: removed tags/Index/search for maximal simplicity. TOC browsing sufficient. Added token estimates, configurable directory, enhanced tool descriptions. Created TEST_PLAN.md. All 41 tests passing.)

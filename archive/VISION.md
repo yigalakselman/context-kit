@@ -6,30 +6,36 @@
 
 ---
 
-## v1.0 Features (Current Release)
+## v1.0 Features (Released)
 
 ### Core Notebook System
-- Simple, focused notebook with book metaphor (pages, TOC, index)
+- Simple, focused notebook with book metaphor (pages, TOC)
 - JSONL storage with basic CRUD operations
 - 7 MCP tools for AI agent integration
-- Tag-based and section-based search
+- Full-text search (query parameter) and section-based search
+- Token size estimates for context planning
+- Enhanced tool descriptions for zero-config agent onboarding
 
-### Starter Notebook (Self-Teaching System)
+---
 
-**Ship with built-in best practices notebook** - ContextKit demonstrates its own value by documenting how to use itself!
+## v1.1 Features (Planned)
+
+### Starter Notebook (Self-Teaching System) - DEFERRED TO v1.1
+
+**Concept:** Ship with built-in best practices notebook - ContextKit demonstrates its own value by documenting how to use itself!
 
 **Starter notes to include:**
 
 1. **Section: "getting-started"**
-   - How to organize notes with sections and tags
+   - How to organize notes with descriptive section names
    - When to create a new note vs update an existing one
    - Using the Table of Contents to navigate knowledge
-   - Search strategies: tags vs sections vs combined queries
+   - Search strategies: keywords vs sections vs combined queries
 
 2. **Section: "best-practices"**
    - Keep notes focused and atomic (one concept per note)
    - Use descriptive titles that extract well from content
-   - Tag consistently for better searchability
+   - Use descriptive section names for better organization
    - Update notes rather than creating duplicates
    - When to use different sections (strategies, examples, lessons-learned, etc.)
 
@@ -41,7 +47,7 @@
 
 4. **Section: "meta"**
    - About this notebook system
-   - The book metaphor explained (pages, TOC, index)
+   - The book metaphor explained (pages, TOC)
    - How notes are stored (JSONL format)
    - MCP tools overview
 
@@ -56,6 +62,12 @@
 - Demonstrates the tool's value from first use
 - Shows real-world note organization
 - Reduces onboarding friction
+
+**Why deferred to v1.1:**
+- v1.0 already includes comprehensive tool descriptions (zero-config onboarding)
+- README.md provides extensive documentation and examples
+- Can gather user feedback on what examples would be most helpful
+- Allows focus on core functionality and distribution for v1.0
 
 ---
 

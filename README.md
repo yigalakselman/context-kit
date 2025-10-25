@@ -1,14 +1,14 @@
 # ContextKit
 
-A modular toolkit for building, evolving, and reusing structured LLM context.
+A persistent notebook for AI agents with book metaphor (pages, TOC). Features token estimates and zero-config onboarding.
 
-**Status:** 🚧 v1.0 in development
+**Status:** ✅ v1.0 Complete & Tested
 
 ---
 
 ## What is ContextKit?
 
-ContextKit enables LLM agents to maintain **structured, evolving, high-quality context** by providing a persistent **notebook** modeled like a real book—with pages, Table of Contents, and Index. Agents can write notes, browse what's available, and retrieve relevant pages on-demand, all in universal markdown format.
+ContextKit enables LLM agents to maintain **structured, evolving, high-quality context** by providing a persistent **notebook** modeled like a real book—with pages and Table of Contents. Agents can write notes, browse what's available, and retrieve relevant pages on-demand, all in universal markdown format.
 
 ## The Problem
 
@@ -17,7 +17,7 @@ ContextKit enables LLM agents to maintain **structured, evolving, high-quality c
 **Specific pain points:**
 - **No persistent memory** - Agent learns "how to paginate this API" → next session, makes the same mistake again
 - **Static prompts** - Human manually rewrites system prompt after every insight, slow and lossy
-- **Context collapse** - Details get lost when compressing knowledge ("validate input" instead of the full checklist with all edge cases)
+- **Context collapse** - Details get lost when compressing knowledge
 - **Poor reuse** - Knowledge from one agent session can't be shared with another
 - **All-or-nothing loading** - Either load entire knowledge base (waste tokens) or load nothing (miss relevant knowledge)
 
@@ -25,58 +25,92 @@ ContextKit enables LLM agents to maintain **structured, evolving, high-quality c
 
 **Give AI agents a persistent notebook.**
 
-ContextKit provides a **notebook tool** that agent systems can integrate:
+ContextKit provides a **notebook tool** that agent systems can integrate via [Model Context Protocol (MCP)](https://modelcontextprotocol.io):
 - **Write** - Record decisions, lessons, workflows as they work
 - **Store** - Keep atomic notes durably (survives sessions)
-- **Retrieve** - Smart retrieval of relevant past knowledge when needed
-- **Evolve** - Knowledge base improves through use (reflection + curation)
+- **Retrieve** - Browse TOC and retrieve relevant pages on demand
+- **Plan** - Token estimates help agents manage context usage
 
 Instead of starting from scratch each time, agents can reference their notes:
 > "I've seen this before. Let me check my notes... ah yes, last time I learned to handle pagination this way."
-
-### How It Fits
-
-**Important distinction:**
-- **Memory** = Short-lived session state (conversation history, limited by hardware)
-- **Context Window** = What goes to the LLM (assembled by agent system: prompt + query + history + tools + notes)
-- **Notebook** = Persistent storage tool (ContextKit's role—provides notes to agent systems)
-
-ContextKit is the **Notebook**. Agent systems (like Claude Code) handle context assembly and call Notebook as a tool to fetch relevant notes.
 
 ---
 
 ## Current Status
 
-**v1.0 (Complete):**
-- ✅ Note schema with validation (id, section, content, tags, created_at, metadata)
-- ✅ Book metaphor (pages, TOC, Index, markdown output)
-- ✅ Notebook API (add, retrieve, search, update, delete)
-- ✅ JSONL storage layer
-- ✅ MCP server (stdio transport for AI agents like Claude Desktop)
+**v1.0 Features (Complete & Tested):**
+- ✅ Simplified note schema (id, section, content, created_at, metadata)
+- ✅ Book metaphor (pages, TOC with token estimates, markdown output)
+- ✅ Token size estimates (~4 chars/token heuristic for context planning)
+- ✅ Configurable notebook directory (multi-project support)
+- ✅ Notebook API (add, retrieve, update, delete)
+- ✅ JSONL storage layer (simple, git-friendly)
+- ✅ MCP server with enhanced tool descriptions (zero-config agent onboarding)
+- ✅ 41 unit tests passing
+- ✅ Comprehensive integration testing
+
+**Architecture Decisions (v1.0):**
+- **Removed tags** - Simpler schema, more LLM-native (use descriptive section names instead)
+- **Removed Index** - Browse via TOC instead
+- **Removed search** - TOC browsing sufficient for v1.0, simpler mental model
+- **Enhanced tool descriptions** - Built-in usage guidance for any MCP-compatible agent
 
 **Future Roadmap:**
-- v1.1: Dependency resolution & sequence assembly
-- v1.2: Reflection-curation feedback loop (ACE-style)
-- v1.3: Evaluation dashboard
-
----
-
-## Documentation
-
-Our documentation uses a context-optimized structure:
-
-- **[CLAUDE.md](./CLAUDE.md)** - Current session focus (updated as development progresses)
-- **[DEVELOPMENT.md](./DEVELOPMENT.md)** - Comprehensive planning document with architecture, decisions, and full scope
-- **[MCP_SETUP.md](./MCP_SETUP.md)** - MCP server setup guide for AI agents (Claude Desktop, etc.)
-- **[BEST_PRACTICES.md](./BEST_PRACTICES.md)** - Code style guidelines, commands, and testing practices
-- **[VISION.md](./VISION.md)** - Future roadmap (v1.2+) with ACE-style features
-- **[DOC_MAINTENANCE.md](./DOC_MAINTENANCE.md)** - Guidelines for maintaining documentation
-
-**Philosophy:** Separation of temporal concerns (now/stable/future) and retrieval patterns (always-loaded/just-in-time/reference).
+- v1.1: Starter notebook, semantic search (if needed based on feedback)
+- v1.2: Cross-references and note relationships
+- v1.3: Reflection-curation feedback loop (ACE-style)
 
 ---
 
 ## Quick Start
+
+### For AI Agents (MCP Server)
+
+**Recommended approach:** Use ContextKit as an MCP server for Claude Desktop, Cursor, or any MCP-compatible agent.
+
+1. **Install globally:**
+```bash
+npm install -g contextkit
+```
+
+2. **Configure your MCP client** (e.g., Claude Desktop):
+
+```json
+{
+  "mcpServers": {
+    "contextkit": {
+      "command": "contextkit-mcp"
+    }
+  }
+}
+```
+
+**Multi-project setup:**
+```json
+{
+  "mcpServers": {
+    "contextkit-project-a": {
+      "command": "contextkit-mcp",
+      "env": {
+        "CONTEXTKIT_NOTEBOOK_DIR": "/path/to/project-a/.contextkit"
+      }
+    },
+    "contextkit-global": {
+      "command": "contextkit-mcp"
+    }
+  }
+}
+```
+
+The agent will have access to 6 MCP tools with built-in usage guidance:
+- `add_note` - Record new knowledge (with best practices guidance)
+- `get_table_of_contents` - Browse notebook structure with token counts
+- `get_page` - Retrieve specific pages
+- `get_pages` - Retrieve multiple pages at once
+- `update_page` - Modify existing notes
+- `delete_page` - Remove notes
+
+**Zero configuration needed** - tool descriptions include comprehensive usage guidance!
 
 ### As a Library
 
@@ -89,121 +123,272 @@ import { Notebook } from 'contextkit';
 
 const notebook = new Notebook('./my-notebook.jsonl');
 
-// Add a note
+// Add a note (use descriptive section names)
 const pageNum = await notebook.addNote({
-  section: 'strategies',
-  content: '# API Pagination\n\nAlways paginate...',
-  tags: ['api', 'pagination']
+  section: 'api-pagination-strategies',
+  content: '# API Pagination Best Practices\n\nAlways paginate until empty page...'
 });
 
-// Get table of contents
+// Get table of contents (includes token estimates)
 const toc = await notebook.getTableOfContents();
+// Shows: "### Api Pagination Strategies (Page 1) - ~150 tokens"
 
 // Retrieve specific pages
 const page = await notebook.getPage(1);
 
-// Search by tags
-const results = await notebook.search({ tags: ['api'] });
+// Retrieve multiple pages at once
+const pages = await notebook.getPages([1, 2, 3]);
 ```
 
-### As an MCP Server for AI Agents
+---
 
-Configure Claude Desktop or other MCP clients to use ContextKit:
+## Core Concepts
+
+### Book Metaphor
+
+**ContextKit models your agent's notebook as a real book** with pages and Table of Contents.
+
+#### Note (Page)
+Each note is one page in the book with a simplified schema:
+
+```typescript
+{
+  id: "ctx-001",           // → Page 1
+  section: "api-patterns", // Descriptive, hyphenated section name
+  content: "# Retry Logic\n\nImplement exponential backoff...",
+  created_at: "2025-10-24T10:00:00Z",
+  metadata?: {}            // Optional extensibility
+}
+```
+
+**Best practices:**
+- Use descriptive section names (e.g., "mcp-server-setup", "testing-vitest")
+- Keep notes atomic (50-200 tokens ideal, one concept per note)
+- Start content with clear title/heading
+- Write for future retrieval (include context)
+
+#### Table of Contents
+Auto-generated with token estimates for context planning:
+
+```markdown
+# My Notebook
+
+## Table of Contents
+
+### Api Patterns (Pages 1-3) - ~450 tokens
+- Page 1: Retry Logic with Exponential Backoff
+- Page 2: Rate Limiting Strategies
+- Page 3: Circuit Breaker Pattern
+
+### Database Optimization (Pages 4-5) - ~320 tokens
+- Page 4: Connection Pooling
+- Page 5: Query Optimization
+
+---
+**Total:** 5 pages, ~770 tokens
+```
+
+#### Page Output
+Markdown format (universal for all LLMs):
+
+```markdown
+## Page 1: Retry Logic with Exponential Backoff
+
+**Section:** Api Patterns
+
+# Retry Logic with Exponential Backoff
+
+Implement retry logic with exponential backoff for transient failures:
+
+1. Initial retry after 1 second
+2. Double wait time for each retry
+3. Cap at 60 seconds max
+4. Limit to 5 total attempts
+
+\`\`\`typescript
+async function retryWithBackoff(fn, maxRetries = 5) {
+  // implementation...
+}
+\`\`\`
+```
+
+### Token Estimates
+
+ContextKit provides token estimates (~4 characters per token) to help agents plan context usage:
+
+- **In TOC:** Each section shows estimated token count
+- **Total:** Overall notebook size displayed
+- **Planning:** Agents can decide what to retrieve based on available context
+
+---
+
+## Key Features
+
+- 📖 **Book metaphor** - Intuitive pages and TOC navigation
+- 📦 **Atomic storage** - JSONL-based (one page = one line, git-friendly)
+- 📄 **Universal format** - Markdown output works with all LLMs
+- 📊 **Token estimates** - Plan context usage intelligently
+- 🎯 **Smart retrieval** - Browse TOC first, then fetch only needed pages
+- 🔧 **Multi-project** - Configurable notebook directory via env var
+- 📝 **MCP-native** - Designed for AI agent integration
+- 💡 **Zero-config** - Tool descriptions include usage guidance
+- ✅ **Well-tested** - 41 unit tests + integration testing
+
+---
+
+## Configuration
+
+### Notebook Directory
+
+By default, notebooks are stored in `~/.contextkit/notebook.jsonl`.
+
+**Change location via environment variable:**
+
+```bash
+export CONTEXTKIT_NOTEBOOK_DIR="/path/to/project/.contextkit"
+contextkit-mcp
+```
+
+**Multi-project setup** (MCP config):
 
 ```json
 {
   "mcpServers": {
-    "contextkit": {
-      "command": "node",
-      "args": ["/path/to/context-kit/dist/mcp-server.js"]
+    "project-a": {
+      "command": "contextkit-mcp",
+      "env": {
+        "CONTEXTKIT_NOTEBOOK_DIR": "${HOME}/projects/project-a/.contextkit"
+      }
+    },
+    "project-b": {
+      "command": "contextkit-mcp",
+      "env": {
+        "CONTEXTKIT_NOTEBOOK_DIR": "${HOME}/projects/project-b/.contextkit"
+      }
+    },
+    "global": {
+      "command": "contextkit-mcp"
+      // Uses default: ~/.contextkit/
     }
   }
 }
 ```
 
-Then your AI agent can use tools like:
-- `add_note` - Record new knowledge
-- `get_table_of_contents` - Browse what's available
-- `get_page` - Retrieve specific pages
-- `search_notes` - Find notes by tags/sections
-
-See **[MCP_SETUP.md](./MCP_SETUP.md)** for detailed configuration.
-
-See **[examples/basic-usage.ts](./examples/basic-usage.ts)** for more examples
+This allows agents to access project-specific notebooks alongside a global notebook.
 
 ---
 
-## Core Concepts (Book Metaphor)
+## Documentation
 
-**ContextKit models your agent's notebook as a real book** with pages, Table of Contents, and Index.
+### Active Documentation
+- **[CLAUDE.md](./CLAUDE.md)** - Current development status and quick reference
+- **[TEST_PLAN.md](./TEST_PLAN.md)** - Comprehensive test plan for validation
 
-**Note (Page)** - Each note is one page in the book
-```json
-{
-  "id": "ctx-001",
-  "section": "strategies",
-  "content": "Always validate user input before processing",
-  "tags": ["validation", "security"]
+### Archived Documentation
+Historical documentation available in `archive/` for reference:
+- **[archive/DEVELOPMENT.md](./archive/DEVELOPMENT.md)** - Full plan, architecture, decisions
+- **[archive/MCP_SETUP.md](./archive/MCP_SETUP.md)** - Detailed MCP server setup guide
+- **[archive/BEST_PRACTICES.md](./archive/BEST_PRACTICES.md)** - Code style and testing practices
+- **[archive/VISION.md](./archive/VISION.md)** - Future roadmap (v1.2+ features)
+- **[archive/TESTING_STRATEGY.md](./archive/TESTING_STRATEGY.md)** - Testing approach and results
+
+---
+
+## Context Engineering Principles
+
+ContextKit is built on principles for LLM-native knowledge management:
+
+1. **Atomic Notes** - One concept per note, independently retrievable
+2. **Just-in-Time Retrieval** - Fetch only what's needed when needed
+3. **Token-Efficient** - Compact, focused content
+4. **Descriptive Organization** - Section names provide context (no ambiguous tags)
+5. **Self-Documenting** - Tool descriptions guide agents on usage
+
+---
+
+## API Reference
+
+### Notebook Class
+
+```typescript
+class Notebook {
+  constructor(storePath: string)
+
+  // Core operations
+  addNote(note: Omit<Note, 'id'>): Promise<number>
+  getPage(pageNum: number): Promise<string>
+  getPages(pageNums: number[]): Promise<string>
+  getTableOfContents(): Promise<string>
+  updatePage(pageNum: number, updates: Partial<Omit<Note, 'id'>>): Promise<void>
+  deletePage(pageNum: number): Promise<void>
+}
+
+interface Note {
+  id: string
+  section: string
+  content: string
+  created_at?: string
+  metadata?: Record<string, unknown>
 }
 ```
-`ctx-001` → **Page 1**
 
-**Table of Contents** - Auto-generated navigation
-```markdown
-### Strategies (Pages 1-5)
-- Page 1: Input Validation Strategy
-- Page 2: Error Handling Strategy
+### MCP Tools
 
-### Examples (Pages 6-10)
-- Page 6: API Call Example
+All tools include comprehensive usage guidance in their descriptions:
 
-## Index (Tags)
-- validation: Pages 1, 6
-- api: Pages 2, 6
-```
-
-**Page Output** - Markdown format (universal for all LLMs)
-```markdown
-## Page 1: Input Validation Strategy
-
-**Section:** strategies
-**Tags:** #validation #security
-
-Always validate user input before processing:
-1. Check for null/undefined
-2. Verify data types
-3. Validate length constraints
-4. Sanitize input
-
-**See also:** Page 6 (example)
-```
-
----
-
-## Key Features (Planned)
-
-- 📖 **Book metaphor** - Intuitive pages, TOC, and Index navigation
-- 📦 **Atomic storage** - JSONL-based note store (one page = one line)
-- 📄 **Universal format** - Markdown output works with all LLMs
-- 🔍 **Smart retrieval** - Browse TOC, search by tags, fetch specific pages
-- 🎯 **Token-efficient** - Fetch TOC first, then only needed pages
-- 📝 **Tool-oriented API** - Designed for AI agent systems to integrate
-- 🔄 **Self-improving** (v1.2+) - Reflection-curation feedback loops
+- `add_note(section, content)` → returns page number
+- `get_table_of_contents()` → returns TOC with token estimates
+- `get_page(pageNumber)` → returns formatted page
+- `get_pages(pageNumbers)` → returns multiple pages
+- `update_page(pageNumber, section?, content?)` → updates page
+- `delete_page(pageNumber)` → removes page
 
 ---
 
 ## Contributing
 
-See [DEVELOPMENT.md](./DEVELOPMENT.md) for implementation status and [BEST_PRACTICES.md](./BEST_PRACTICES.md) for development workflow.
+ContextKit is developed with AI agents in mind. See [CLAUDE.md](./CLAUDE.md) for current development status.
+
+### Development Setup
+
+```bash
+git clone https://github.com/yourusername/context-kit.git
+cd context-kit
+npm install
+npm run build
+npm test
+```
+
+### Scripts
+
+```bash
+npm run build        # Compile TypeScript
+npm run typecheck    # Type checking only
+npm test             # Run unit tests
+npm run test:watch   # Watch mode
+npm run mcp          # Start MCP server locally
+npm run clean        # Remove build artifacts
+```
 
 ---
 
 ## License
 
-TBD
+MIT
 
 ---
 
 ## Contact
 
-**Owner:** Yigal Akselman
+**Author:** Yigal Akselman
+
+**Issues:** [GitHub Issues](https://github.com/yourusername/context-kit/issues)
+
+---
+
+## Acknowledgments
+
+Built with:
+- [Model Context Protocol (MCP)](https://modelcontextprotocol.io) - AI agent integration standard
+- [Zod](https://zod.dev) - TypeScript-first schema validation
+- [Vitest](https://vitest.dev) - Modern testing framework

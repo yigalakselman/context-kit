@@ -100,9 +100,8 @@ Once configured, AI agents can use these tools:
 Add a new note to the notebook.
 
 **Parameters:**
-- `section` (required): Section name (e.g., "strategies", "examples", "lessons-learned")
+- `section` (required): Section name (e.g., "api-patterns", "testing-strategies", "lessons-learned")
 - `content` (required): Note content in markdown
-- `tags` (optional): Array of tags for indexing
 
 **Returns:** Page number of the created note
 
@@ -110,18 +109,17 @@ Add a new note to the notebook.
 ```typescript
 add_note({
   section: "api-patterns",
-  content: "# Always paginate APIs\n\nNever assume fixed page count...",
-  tags: ["api", "pagination", "best-practices"]
+  content: "# Always paginate APIs\n\nNever assume fixed page count. Always paginate until empty page is returned..."
 })
 // Returns: "Note added successfully as Page 1"
 ```
 
 ### `get_table_of_contents`
-Get the full table of contents and index.
+Get the full table of contents with token estimates.
 
 **Parameters:** None
 
-**Returns:** Markdown with sections, page ranges, and tag index
+**Returns:** Markdown with sections, page ranges, and estimated token counts
 
 **Example output:**
 ```markdown
@@ -129,14 +127,20 @@ Get the full table of contents and index.
 
 ## Table of Contents
 
-### API Patterns (Pages 1-5)
+### Api Patterns (Pages 1-5) - ~850 tokens
 - Page 1: Always paginate APIs
 - Page 2: Rate limiting strategies
-...
+- Page 3: Error handling for API failures
+- Page 4: Authentication best practices
+- Page 5: Response caching strategies
 
-## Index (Tags)
-- **api**: Page 1, Page 2, Page 5
-- **pagination**: Page 1, Page 3
+### Testing Strategies (Pages 6-8) - ~420 tokens
+- Page 6: Unit testing with Vitest
+- Page 7: Integration testing patterns
+- Page 8: Mocking external APIs
+
+---
+**Total:** 8 pages, ~1270 tokens
 ```
 
 ### `get_page`
@@ -156,20 +160,33 @@ Get multiple pages by page numbers.
 **Returns:** All pages in markdown
 
 ### `search_notes`
-Search notes by section and/or tags.
+Search notes by section and/or keywords.
 
 **Parameters:**
 - `sections` (optional): Filter by section names
-- `tags` (optional): Filter by tags (matches ANY tag)
+- `query` (optional): Search keywords (matches in section names and content, all keywords must match)
 - `limit` (optional): Maximum number of results
 
 **Returns:** Matching pages in markdown
 
-**Example:**
+**Examples:**
 ```typescript
+// Search by keywords (full-text search)
 search_notes({
-  tags: ["api", "error-handling"],
+  query: "api error handling",
   limit: 5
+})
+
+// Search by section
+search_notes({
+  sections: ["api-patterns"]
+})
+
+// Combined search
+search_notes({
+  sections: ["api-patterns"],
+  query: "pagination retry",
+  limit: 3
 })
 ```
 
@@ -180,7 +197,6 @@ Update an existing page.
 - `pageNumber` (required): Page number to update
 - `section` (optional): New section name
 - `content` (optional): New content
-- `tags` (optional): New tags array
 
 ### `delete_page`
 Delete a page from the notebook.
@@ -205,10 +221,11 @@ Recommended workflow for AI agents:
 User: "Help me build a pagination feature for my API"
 
 Claude:
-1. Calls get_table_of_contents() → Sees "Page 1: Always paginate APIs"
-2. Calls get_page(1) → Retrieves the pagination strategy note
-3. Uses that knowledge to help the user
-4. After solving the problem, calls add_note() to record the new implementation pattern
+1. Calls get_table_of_contents() → Sees "Api Patterns (Pages 1-5)" section
+2. Calls search_notes({query: "pagination"}) → Finds Page 1: "Always paginate APIs"
+3. Calls get_page(1) → Retrieves the detailed pagination strategy note
+4. Uses that knowledge to help the user implement the feature
+5. After solving the problem, calls add_note() to record the new implementation pattern
 ```
 
 ## Troubleshooting

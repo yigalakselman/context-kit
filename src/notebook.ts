@@ -2,16 +2,15 @@
  * Notebook API - Book metaphor implementation
  *
  * Provides high-level API for AI agents to interact with the notebook:
- * - getTableOfContents() - Returns TOC + Index as markdown
+ * - getTableOfContents() - Returns TOC as markdown
  * - getPage(pageNum) - Returns single page as markdown
  * - getPages(pageNums[]) - Returns multiple pages as markdown
- * - search(tags) - Returns matching pages as markdown
  * - addNote({...}) - Writes note, returns page number
  * - updatePage(pageNum, {...}) - Modifies existing page
  * - deletePage(pageNum) - Removes page
  */
 
-import type { Note, RetrievalOptions } from './types.js';
+import type { Note } from './types.js';
 import { NoteStore } from './store.js';
 import { getIdFromPage, getPageNumber, generateNextId } from './utils/id.js';
 import { generateTableOfContents, formatPage, formatPages } from './formatters.js';
@@ -27,8 +26,8 @@ export class Notebook {
   }
 
   /**
-   * Get Table of Contents + Index
-   * @returns Markdown string with TOC and tag-based index
+   * Get Table of Contents
+   * @returns Markdown string with TOC organized by sections
    */
   async getTableOfContents(): Promise<string> {
     const notes = await this.store.list();
@@ -71,37 +70,6 @@ export class Notebook {
     }
 
     return formatPages(notes);
-  }
-
-  /**
-   * Search for pages by tags and/or sections
-   * @param options - Retrieval options (tags, sections, limit)
-   * @returns Markdown string with matching pages
-   */
-  async search(options: RetrievalOptions): Promise<string> {
-    const allNotes = await this.store.list();
-
-    let filtered = allNotes;
-
-    // Filter by sections if specified
-    if (options.sections && options.sections.length > 0) {
-      filtered = filtered.filter(note => options.sections!.includes(note.section));
-    }
-
-    // Filter by tags if specified (note matches if it has ANY of the specified tags)
-    if (options.tags && options.tags.length > 0) {
-      filtered = filtered.filter(note => {
-        if (!note.tags || note.tags.length === 0) return false;
-        return options.tags!.some(tag => note.tags!.includes(tag));
-      });
-    }
-
-    // Apply limit if specified
-    if (options.limit && options.limit > 0) {
-      filtered = filtered.slice(0, options.limit);
-    }
-
-    return formatPages(filtered);
   }
 
   /**

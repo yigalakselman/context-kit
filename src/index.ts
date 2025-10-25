@@ -8,15 +8,14 @@
 export { Notebook } from './notebook.js';
 
 // Types
-export type { Note, RetrievalOptions } from './types.js';
+export type { Note } from './types.js';
 export { NoteSchema } from './types.js';
 
 // Lower-level components (for advanced usage)
 export { NoteStore } from './store.js';
-export { getPageNumber, getIdFromPage, generateNextId, extractTitle } from './utils/id.js';
+export { getPageNumber, getIdFromPage, generateNextId, extractTitle, estimateTokens } from './utils/id.js';
 export {
   generateTOC,
-  generateIndex,
   formatPage,
   formatPages,
   generateTableOfContents,

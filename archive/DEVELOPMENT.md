@@ -1,8 +1,27 @@
 # CLAUDE.md — Living Development Document
 
+> **⚠️ HISTORICAL DOCUMENT**
+>
+> This document is archived for reference. It represents the initial planning and development phases of ContextKit.
+>
+> **Major changes since archival:**
+> - **Tags removed** - v1.0 uses descriptive section names instead of tags
+> - **Index removed** - Replaced with full-text search (query parameter)
+> - **Token estimates added** - TOC now shows estimated token counts
+> - **Enhanced tool descriptions** - Zero-config agent onboarding via MCP tools
+>
+> **For current documentation, see:**
+> - `README.md` - Current features and usage
+> - `CLAUDE.md` - Active development status
+> - `TEST_PLAN.md` - Comprehensive test plan
+>
+> **Last updated:** 2025-10-13 (archived 2025-10-24)
+
+---
+
 **Project:** ContextKit
 **Owner:** Yigal Akselman
-**Status:** 🟡 Development (v1.1 → v1.2)
+**Status:** 🟡 Development (v1.1 → v1.2) [Historical status]
 **Last Updated:** 2025-10-13
 
 ---

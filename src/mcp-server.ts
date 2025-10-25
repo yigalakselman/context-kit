@@ -14,11 +14,9 @@ import { z } from 'zod';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
 
-// Default notebook path: ~/.contextkit/notebook.jsonl
-const DEFAULT_NOTEBOOK_PATH = join(homedir(), '.contextkit', 'notebook.jsonl');
-
-// Get notebook path from environment or use default
-const notebookPath = process.env.CONTEXTKIT_NOTEBOOK_PATH || DEFAULT_NOTEBOOK_PATH;
+// Get notebook directory from environment or use default (~/.contextkit/)
+const notebookDir = process.env.CONTEXTKIT_NOTEBOOK_DIR || join(homedir(), '.contextkit');
+const notebookPath = join(notebookDir, 'notebook.jsonl');
 
 // Initialize notebook
 const notebook = new Notebook(notebookPath);
@@ -34,15 +32,29 @@ server.registerTool(
   'add_note',
   {
     title: 'Add Note',
-    description: 'Add a new note to the notebook. Returns the page number of the created note.',
+    description: `Add a new note to the notebook for persistent memory across sessions.
+
+**When to use:**
+- Capture architecture decisions and their rationale
+- Record code patterns and best practices discovered during work
+- Save bug investigation findings and solutions
+- Store user preferences and project context
+- Document lessons learned from errors or challenges
+
+**Best practices:**
+- Use descriptive section names (e.g., "mcp-setup", "testing-vitest", "architecture-decisions")
+- Keep notes focused and atomic (one concept per note, 50-200 tokens ideal)
+- Start content with a clear title or heading
+- Write for future retrieval - include enough context to be useful months later
+
+Returns the page number of the created note.`,
     inputSchema: {
-      section: z.string().describe('Section name (e.g., strategies, examples, lessons-learned)'),
+      section: z.string().describe('Section name - use descriptive, hyphenated names (e.g., mcp-setup, testing-vitest, architecture-decisions)'),
       content: z.string().describe('Note content in markdown format'),
-      tags: z.array(z.string()).optional().describe('Array of tags for indexing'),
     },
   },
-  async ({ section, content, tags }) => {
-    const pageNumber = await notebook.addNote({ section, content, tags });
+  async ({ section, content }) => {
+    const pageNumber = await notebook.addNote({ section, content });
     return {
       content: [
         {
@@ -59,7 +71,21 @@ server.registerTool(
   'get_table_of_contents',
   {
     title: 'Get Table of Contents',
-    description: 'Get the full table of contents and index for the notebook. Returns markdown with sections, page ranges, and tag index.',
+    description: `Get the table of contents showing notebook structure and token counts.
+
+**When to use:**
+- At the start of a session - understand what knowledge exists in the notebook
+- Before retrieving notes - see available sections and their sizes
+- To plan context usage - check token counts before loading content
+- When deciding what to search for - discover relevant sections
+
+Returns markdown with:
+- Section names organized alphabetically
+- Page ranges for each section
+- Estimated token count per section and total
+- Helps you make smart decisions about what to retrieve
+
+**Tip:** Always call this first to understand notebook structure.`,
     inputSchema: {},
   },
   async () => {
@@ -121,55 +147,31 @@ server.registerTool(
   }
 );
 
-// Register search_notes tool
-server.registerTool(
-  'search_notes',
-  {
-    title: 'Search Notes',
-    description: 'Search notes by section and/or tags. Returns matching pages in markdown format.',
-    inputSchema: {
-      sections: z.array(z.string()).optional().describe('Filter by section names'),
-      tags: z.array(z.string()).optional().describe('Filter by tags (matches ANY tag)'),
-      limit: z.number().int().positive().optional().describe('Maximum number of results'),
-    },
-  },
-  async ({ sections, tags, limit }) => {
-    // Filter out undefined values for exactOptionalPropertyTypes
-    const searchOptions: { sections?: string[]; tags?: string[]; limit?: number } = {};
-    if (sections !== undefined) searchOptions.sections = sections;
-    if (tags !== undefined) searchOptions.tags = tags;
-    if (limit !== undefined) searchOptions.limit = limit;
-    const results = await notebook.search(searchOptions);
-    return {
-      content: [
-        {
-          type: 'text',
-          text: results,
-        },
-      ],
-    };
-  }
-);
-
 // Register update_page tool
 server.registerTool(
   'update_page',
   {
     title: 'Update Page',
-    description: 'Update an existing page in the notebook. You can update section, content, and/or tags.',
+    description: `Update an existing page in the notebook.
+
+**When to use:**
+- Correct or enhance existing notes
+- Add new information to previous decisions
+- Reorganize notes by moving to different sections
+- Refine content based on new learnings
+
+**Note:** You can update section, content, or both in a single call.`,
     inputSchema: {
       pageNumber: z.number().int().positive().describe('Page number to update'),
       section: z.string().optional().describe('New section name'),
       content: z.string().optional().describe('New content in markdown'),
-      tags: z.array(z.string()).optional().describe('New tags array'),
     },
   },
-  async ({ pageNumber, section, content, tags }) => {
+  async ({ pageNumber, section, content }) => {
     // Filter out undefined values for exactOptionalPropertyTypes
-    const updates: { section?: string; content?: string; tags?: string[] } = {};
+    const updates: { section?: string; content?: string } = {};
     if (section !== undefined) updates.section = section;
     if (content !== undefined) updates.content = content;
-    if (tags !== undefined) updates.tags = tags;
     await notebook.updatePage(pageNumber, updates);
     return {
       content: [
