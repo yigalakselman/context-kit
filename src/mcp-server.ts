@@ -35,21 +35,27 @@ server.registerTool(
     description: `Add a new note to the notebook for persistent memory across sessions.
 
 **When to use:**
-- Capture architecture decisions and their rationale
-- Record code patterns and best practices discovered during work
-- Save bug investigation findings and solutions
-- Store user preferences and project context
-- Document lessons learned from errors or challenges
+- Capture knowledge worth remembering beyond this session
+- Record decisions and their reasoning (the "why", not just "what")
+- Document patterns, strategies, or insights discovered during work
+- Store user preferences, domain facts, or project context
+- Save lessons learned from successes or failures
+
+**Context engineering principles applied:**
+- **Atomic Notes**: One concept per note (50-200 tokens ideal)
+- **Token-Efficient**: Compact, focused content - no fluff
+- **Descriptive Organization**: Section names provide context for browsing
 
 **Best practices:**
-- Use descriptive section names (e.g., "mcp-setup", "testing-vitest", "architecture-decisions")
-- Keep notes focused and atomic (one concept per note, 50-200 tokens ideal)
-- Start content with a clear title or heading
-- Write for future retrieval - include enough context to be useful months later
+- Start with a clear title or heading (makes content scannable)
+- Write for future retrieval - assume no memory of this conversation
+- Include enough context to be useful months later
+- Use descriptive section names: "user-preferences", "api-patterns", "project-constraints"
+- Think: "What would I search for to find this?" - include those terms naturally
 
 Returns the page number of the created note.`,
     inputSchema: {
-      section: z.string().describe('Section name - use descriptive, hyphenated names (e.g., mcp-setup, testing-vitest, architecture-decisions)'),
+      section: z.string().describe('Section name - use descriptive, hyphenated names (e.g., user-preferences, api-patterns, project-constraints)'),
       content: z.string().describe('Note content in markdown format'),
     },
   },
@@ -74,18 +80,28 @@ server.registerTool(
     description: `Get the table of contents showing notebook structure and token counts.
 
 **When to use:**
-- At the start of a session - understand what knowledge exists in the notebook
-- Before retrieving notes - see available sections and their sizes
-- To plan context usage - check token counts before loading content
-- When deciding what to search for - discover relevant sections
+- **Start of every session** - discover what persistent knowledge exists
+- Before retrieving notes - browse sections to find relevant domains
+- Plan context budget - token counts help manage context window
+- Understand knowledge organization - see your information architecture
+
+**Context engineering principles applied:**
+- **Just-in-Time Retrieval**: Browse first, then fetch only needed pages
+- **Token-Efficient**: Token estimates let you plan within context budget
+- **Descriptive Organization**: Section names reveal knowledge domains
+- **Self-Documenting**: Shows your notebook's structure at a glance
 
 Returns markdown with:
-- Section names organized alphabetically
+- Section names (organized alphabetically)
 - Page ranges for each section
-- Estimated token count per section and total
-- Helps you make smart decisions about what to retrieve
+- Estimated token count per section + total
+- First line of each page (helps identify content)
 
-**Tip:** Always call this first to understand notebook structure.`,
+**Recommended workflow:**
+1. Call this first to see what exists
+2. Identify relevant sections for current task
+3. Check token estimates to plan retrieval
+4. Use get_page or get_pages to fetch specific content`,
     inputSchema: {},
   },
   async () => {
@@ -155,10 +171,22 @@ server.registerTool(
     description: `Update an existing page in the notebook.
 
 **When to use:**
-- Correct or enhance existing notes
-- Add new information to previous decisions
-- Reorganize notes by moving to different sections
-- Refine content based on new learnings
+- Correct outdated or inaccurate information
+- Enhance notes with new details discovered since creation
+- Consolidate duplicate or related knowledge into one authoritative note
+- Reorganize by moving to a more appropriate section
+- Refine for clarity and scannability
+
+**Context engineering principles applied:**
+- **Just-in-Time Retrieval**: Keep notes current so future retrieval is accurate
+- **Token-Efficient**: Consolidate rather than accumulate - prevent note bloat
+- **Atomic Notes**: If updating makes a note cover multiple concepts, split instead
+
+**Compaction strategy:**
+- Keep: decisions, strategies, constraints, lessons learned
+- Update: when understanding deepens or details emerge
+- Split: when one note grows to cover multiple concepts
+- Delete: when information becomes obsolete (use delete_page tool)
 
 **Note:** You can update section, content, or both in a single call.`,
     inputSchema: {

@@ -69,6 +69,57 @@
 - Can gather user feedback on what examples would be most helpful
 - Allows focus on core functionality and distribution for v1.0
 
+### Note-Level Templates & Best Practice Patterns
+
+**Concept:** Provide reusable note templates for common knowledge patterns - agents learn structure by example, not enforcement.
+
+**Core idea:**
+- Templates are just regular notes in a `template-examples` section
+- Agents discover templates via TOC
+- No validation/enforcement - flexible guidance, not rigid structure
+- Domain-agnostic patterns work across use cases
+
+**Template patterns to include:**
+
+1. **Decision Log Template**
+   - Context → Decision → Rationale → Alternatives → Consequences
+   - Section: `decision-log`
+   - Use: Track important decisions and their reasoning
+
+2. **Skill/Procedure Template**
+   - Purpose → Prerequisites → Ordered Steps → Success Criteria → Pitfalls
+   - Section: `skills` or `procedures`
+   - Use: Document repeatable workflows and ordered sequences
+
+3. **Troubleshooting Template**
+   - Symptoms → Investigation → Root Cause → Solution → Prevention
+   - Section: `troubleshooting` or `lessons-learned`
+   - Use: Build knowledge base of past issues and fixes
+
+4. **User Preference Template**
+   - Preference → Context → Examples (good/bad)
+   - Section: `user-preferences`
+   - Use: Capture user preferences with clear examples
+
+**Benefits:**
+- Consistency - similar types of knowledge use similar structure
+- Completeness - templates prompt for important information
+- Discoverability - agents learn what to capture through examples
+- Customizable - users can add domain-specific templates
+- No overhead - templates are just notes, no new infrastructure
+
+**Implementation approach:**
+- Add `template-examples` section to Starter Notebook
+- Include 4-6 common template patterns with examples
+- Update tool descriptions to mention template availability
+- Users can extend with custom domain templates
+
+**Design principles:**
+- Learn by example, not enforcement
+- Note-level structure, not notebook-level constraints
+- Flexibility over rigidity
+- Domain-agnostic but customizable for specific domains
+
 ---
 
 ## 1) Core Principles

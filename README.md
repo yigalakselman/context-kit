@@ -56,7 +56,7 @@ Instead of starting from scratch each time, agents can reference their notes:
 - **Enhanced tool descriptions** - Built-in usage guidance for any MCP-compatible agent
 
 **Future Roadmap:**
-- v1.1: Starter notebook, semantic search (if needed based on feedback)
+- v1.1: Starter notebook with note templates (decision logs, skills/procedures, troubleshooting patterns), semantic search (if needed based on feedback)
 - v1.2: Cross-references and note relationships
 - v1.3: Reflection-curation feedback loop (ACE-style)
 
